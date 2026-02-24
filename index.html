@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ishara Connect | System Documentation</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Noto Sans', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        cyber: {
+                            bg: '#050505',
+                            card: 'rgba(255, 255, 255, 0.03)',
+                            border: 'rgba(255, 255, 255, 0.08)',
+                            green: '#00f260',
+                            blue: '#0575E6',
+                            pink: '#ff0099'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Prism.js for Code Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet" />
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            background-color: #050505;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+
+        /* Interactive Canvas Background */
+        #network-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+        /* Glassmorphism Classes */
+        .glass-card {
+            background: var(--card-bg, rgba(20, 20, 30, 0.4));
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border, rgba(255, 255, 255, 0.1));
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            border-radius: 1.5rem;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050505;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f260;
+        }
+
+        /* Typography Gradients */
+        .text-gradient {
+            background: linear-gradient(90deg, #00f260, #0575E6, #ff0099);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 5s linear infinite;
+        }
+
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+
+        /* Sidebar Navigation Active State */
+        .nav-link.active {
+            color: #00f260;
+            border-left-color: #00f260;
+            background: rgba(0, 242, 96, 0.1);
+        }
+
+        .nav-link {
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #0575E6;
+            border-left-color: #0575E6;
+            padding-left: 1.5rem;
+        }
+
+        /* Code Block Adjustments */
+        pre[class*="language-"] {
+            border-radius: 1rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.5) !important;
+            margin: 1.5rem 0;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-cyber-blue selection:text-white flex flex-col md:flex-row min-h-screen">
+
+    <!-- Interactive Background -->
+    <canvas id="network-canvas"></canvas>
+
+    <!-- Mobile Header -->
+    <header class="md:hidden glass-card m-4 p-4 sticky top-4 z-50 flex justify-between items-center">
+        <h1 class="font-heading font-bold text-xl text-gradient">Ishara Connect</h1>
+        <button id="mobile-menu-btn" class="text-gray-300 hover:text-white">
+            <i class="fas fa-bars text-2xl"></i>
+        </button>
+    </header>
+
+    <!-- Sidebar Navigation -->
+    <nav id="sidebar" class="hidden md:flex flex-col w-full md:w-72 h-screen sticky top-0 border-r border-white/10 glass-card md:rounded-none md:border-y-0 p-6 z-40 overflow-y-auto">
+        <div class="mb-10 mt-4">
+            <h1 class="font-heading font-black text-3xl tracking-tight text-gradient mb-2">Ishara Connect</h1>
+            <p class="text-xs text-gray-400 uppercase tracking-widest">System Architecture</p>
+        </div>
+
+        <ul class="space-y-2 text-sm font-medium text-gray-400">
+            <li>
+                <a href="#intro" class="nav-link block py-2 pl-4 border-l-2 border-transparent hover:text-white">1. Introduction</a>
+            </li>
+            <li>
+                <a href="#pipeline" class="nav-link block py-2 pl-4 border-l-2 border-transparent hover:text-white">2. Data Pipeline</a>
+            </li>
+            <li>
+                <a href="#ml" class="nav-link block py-2 pl-4 border-l-2 border-transparent hover:text-white">3. Machine Learning</a>
+            </li>
+            <li>
+                <a href="#backend" class="nav-link block py-2 pl-4 border-l-2 border-transparent hover:text-white">4. Backend Server</a>
+            </li>
+            <li>
+                <a href="#polite-engine" class="nav-link block py-2 pl-4 border-l-2 border-transparent hover:text-white">5. Polite Engine</a>
+            </li>
+            <li>
+                <a href="#frontend" class="nav-link block py-2 pl-4 border-l-2 border-transparent hover:text-white">6. Visual Architecture</a>
+            </li>
+            <li>
+                <a href="#conclusion" class="nav-link block py-2 pl-4 border-l-2 border-transparent hover:text-white">7. Future Scope</a>
+            </li>
+        </ul>
+
+        <div class="mt-auto pt-10">
+            <div class="p-4 rounded-xl bg-white/5 border border-white/10">
+                <p class="text-xs text-gray-400 mb-1">Submitted By:</p>
+                <p class="font-bold text-white text-sm">Sk Nooruddin</p>
+                <p class="font-bold text-white text-sm">Sumaiya Laskar</p>
+                <p class="text-xs text-cyber-blue mt-1">DCST, 2nd Year</p>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6 md:p-12 lg:p-20 overflow-x-hidden">
+        <div class="max-w-4xl mx-auto space-y-24">
+            
+            <!-- Hero Section -->
+            <section id="hero" class="min-h-[70vh] flex flex-col justify-center pt-10">
+                <div class="inline-block px-4 py-1.5 rounded-full border border-cyber-green/30 bg-cyber-green/10 text-cyber-green text-sm font-semibold tracking-wide mb-6 w-max shadow-[0_0_15px_rgba(0,242,96,0.2)]">
+                    <i class="fas fa-satellite-dish mr-2 animate-pulse"></i> Documentation v1.0
+                </div>
+                <h1 class="text-5xl md:text-7xl font-heading font-black leading-tight mb-6">
+                    Breaking the Walls of <br>
+                    <span class="text-gradient">Silence,</span> One Gesture <br>at a Time.
+                </h1>
+                <p class="text-xl text-gray-400 max-w-2xl leading-relaxed mb-10">
+                    Comprehensive System Architecture & Source Code Analysis of an AI-Powered Multilingual Gesture Communication Platform.
+                </p>
+                <div class="flex gap-4">
+                    <a href="#intro" class="px-8 py-4 rounded-xl bg-white text-black font-bold hover:bg-gray-200 transition shadow-[0_0_20px_rgba(255,255,255,0.3)]">
+                        Explore Architecture
+                    </a>
+                    <a href="https://github.com" target="_blank" class="px-8 py-4 rounded-xl glass-card text-white font-bold hover:bg-white/10 transition flex items-center gap-2">
+                        <i class="fab fa-github text-xl"></i> View Source
+                    </a>
+                </div>
+            </section>
+
+            <!-- 1. Introduction -->
+            <section id="intro" class="scroll-mt-24">
+                <h2 class="text-3xl font-heading font-bold mb-8 flex items-center gap-4">
+                    <span class="w-10 h-10 rounded-lg bg-cyber-blue/20 text-cyber-blue flex items-center justify-center text-xl">1</span>
+                    Introduction & Impact Framing
+                </h2>
+                <div class="glass-card p-8 space-y-6 text-gray-300 leading-relaxed">
+                    <h3 class="text-xl font-semibold text-white">The Communication Asymmetry Problem</h3>
+                    <p>
+                        According to global accessibility metrics, millions of speech-impaired individuals rely heavily on sign language as their primary mode of communication. However, over 90% of the general populace does not understand sign language. This disparity creates a profound communication barrier in daily life, especially in high-stakes environments such as healthcare, education, and emergency services.
+                    </p>
+                    <p>
+                        The fundamental issue is not the physical disability itself, but the lack of an instantaneous, bidirectional translation medium. When a deaf or mute individual attempts to communicate, the burden of interpretation falls entirely on the untrained listener.
+                    </p>
+                    <div class="h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent my-6"></div>
+                    <h3 class="text-xl font-semibold text-white">The Ishara Connect Solution</h3>
+                    <p>
+                        Ishara Connect addresses this problem directly by functioning as a real-time, AI-driven bridge. It is a robust web application that utilizes advanced Computer Vision to track hand movements and Machine Learning to classify these movements into distinct lexical concepts.
+                    </p>
+                    <ul class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                        <li class="bg-white/5 p-4 rounded-xl border border-white/10">
+                            <i class="fas fa-exchange-alt text-cyber-green text-2xl mb-3"></i>
+                            <strong class="block text-white mb-2">Bidirectional</strong>
+                            "Listen to Reply" feature transcribes spoken language back to the user.
+                        </li>
+                        <li class="bg-white/5 p-4 rounded-xl border border-white/10">
+                            <i class="fas fa-heart text-cyber-pink text-2xl mb-3"></i>
+                            <strong class="block text-white mb-2">Contextual Politeness</strong>
+                            AI module refines raw gestures into socially conscious requests.
+                        </li>
+                        <li class="bg-white/5 p-4 rounded-xl border border-white/10">
+                            <i class="fas fa-globe-asia text-cyber-blue text-2xl mb-3"></i>
+                            <strong class="block text-white mb-2">Multilingual</strong>
+                            Native audio synthesis for English, Hindi, and Bengali.
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- 2. Data Pipeline -->
+            <section id="pipeline" class="scroll-mt-24">
+                <h2 class="text-3xl font-heading font-bold mb-8 flex items-center gap-4">
+                    <span class="w-10 h-10 rounded-lg bg-cyber-pink/20 text-cyber-pink flex items-center justify-center text-xl">2</span>
+                    Data Collection & Normalization
+                </h2>
+                
+                <div class="glass-card p-8 mb-8">
+                    <h3 class="text-xl font-semibold text-white mb-4">MediaPipe Landmark Extraction</h3>
+                    <p class="text-gray-300 mb-6">
+                        The system utilizes Google's MediaPipe framework, which isolates human hands in a 2D video feed and maps them to a 3D coordinate space containing 21 distinct landmarks per hand.
+                    </p>
+                    <div class="overflow-x-auto rounded-xl border border-white/10">
+                        <table class="w-full text-left text-sm text-gray-300">
+                            <thead class="bg-white/5 text-white uppercase font-heading">
+                                <tr>
+                                    <th class="px-6 py-4">Idx</th>
+                                    <th class="px-6 py-4">Anatomical Landmark</th>
+                                    <th class="px-6 py-4">Idx</th>
+                                    <th class="px-6 py-4">Anatomical Landmark</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-white/5 bg-black/20">
+                                <tr><td class="px-6 py-3 text-cyber-green">0</td><td class="px-6 py-3">WRIST</td><td class="px-6 py-3 text-cyber-blue">11</td><td class="px-6 py-3">MIDDLE_FINGER_DIP</td></tr>
+                                <tr><td class="px-6 py-3 text-cyber-green">4</td><td class="px-6 py-3">THUMB_TIP</td><td class="px-6 py-3 text-cyber-blue">12</td><td class="px-6 py-3">MIDDLE_FINGER_TIP</td></tr>
+                                <tr><td class="px-6 py-3 text-cyber-green">8</td><td class="px-6 py-3">INDEX_FINGER_TIP</td><td class="px-6 py-3 text-cyber-blue">20</td><td class="px-6 py-3">PINKY_TIP</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h3 class="text-xl font-semibold text-white mb-4">Spatial Normalization (<code class="text-cyber-green bg-cyber-green/10 px-2 py-1 rounded">utils.py</code>)</h3>
+                    <p class="text-gray-300 mb-4">
+                        Raw coordinates change drastically depending on the user's distance from the webcam. To prevent the ML model from memorizing positions rather than gestures, mathematical normalization (Centering & Scaling) is applied.
+                    </p>
+<pre><code class="language-python">def extract_keypoints(results):
+    # Pre-allocate 63 slots (21 landmarks * 3 axes) for each hand
+    lh = np.zeros(21 * 3)
+    rh = np.zeros(21 * 3)
+
+    if results.multi_hand_landmarks:
+        for hand_landmarks, handedness in zip(results.multi_hand_landmarks, results.multi_handedness):
+            label = handedness.classification[0].label
+            
+            # Step 1: Array Conversion
+            landmarks = np.array([[lm.x, lm.y, lm.z] for lm in hand_landmarks.landmark])
+            
+            # Step 2: Spatial Centering (Origin Translation)
+            wrist = landmarks[0]
+            centered = landmarks - wrist
+            
+            # Step 3: Scale Invariance
+            middle_mcp = landmarks[9]
+            scale = np.linalg.norm(middle_mcp - wrist)
+            if scale < 1e-6: scale = 1.0 # Prevent division by zero
+            
+            normalized = centered / scale
+            flat_hand = normalized.flatten()
+
+            if label == 'Left':
+                lh = flat_hand
+            else:
+                rh = flat_hand
+
+    # Return a 126-dimensional feature vector
+    return np.concatenate([lh, rh])</code></pre>
+                </div>
+            </section>
+
+            <!-- 3. Machine Learning -->
+            <section id="ml" class="scroll-mt-24">
+                <h2 class="text-3xl font-heading font-bold mb-8 flex items-center gap-4">
+                    <span class="w-10 h-10 rounded-lg bg-cyber-green/20 text-cyber-green flex items-center justify-center text-xl">3</span>
+                    Machine Learning & Training
+                </h2>
+                <div class="glass-card p-8">
+                    <p class="text-gray-300 mb-6">
+                        The project prioritizes real-time performance and low latency. Ishara Connect strategically utilizes a Random Forest Classifier to achieve high accuracy on static spatial data while maintaining sub-100ms inference times on standard CPUs.
+                    </p>
+                    <h3 class="text-xl font-semibold text-white mb-4">Data Augmentation Strategy</h3>
+                    <p class="text-gray-300 mb-4">
+                        Human hands naturally exhibit micro-tremors, and webcam sensors introduce artifact noise. Synthetic data augmentation is applied via noise injection to make the model robust.
+                    </p>
+<pre><code class="language-python"># Separate features and labels
+X = df.drop('label', axis=1)
+y = df['label']
+
+print("Applying Data Augmentation (Noise Injection)...")
+
+# Generate lightly noisy data (5% variance)
+noise_factor = 0.05
+X_noisy = X + np.random.normal(0, noise_factor, X.shape)
+
+# Generate heavily noisy data (10% variance)
+X_noisy_2 = X + np.random.normal(0, noise_factor * 2, X.shape) 
+
+# Triplicate the dataset size
+X_aug = pd.concat([X, X_noisy, X_noisy_2], ignore_index=True)
+y_aug = pd.concat([y, y, y], ignore_index=True)</code></pre>
+                </div>
+            </section>
+
+            <!-- 4. Backend Server -->
+            <section id="backend" class="scroll-mt-24">
+                <h2 class="text-3xl font-heading font-bold mb-8 flex items-center gap-4">
+                    <span class="w-10 h-10 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center text-xl">4</span>
+                    Backend Concurrency Architecture
+                </h2>
+                <div class="glass-card p-8">
+                    <p class="text-gray-300 mb-6">
+                        The backend operates on Flask, wrapped with Flask-SocketIO. WebSockets maintain a persistent, bidirectional connection, allowing for instant feedback loops between the AI inference engine and the frontend UI.
+                    </p>
+                    <h3 class="text-xl font-semibold text-white mb-4">Prediction Buffers</h3>
+                    <p class="text-gray-300 mb-4">
+                        Video feeds process at 30 FPS. To prevent the AI from frantically speaking incorrect words during gesture transitions, a mathematical stability buffer is implemented.
+                    </p>
+<pre><code class="language-python">PREDICTION_BUFFER_SIZE = 3 
+prediction_buffer = collections.deque(maxlen=PREDICTION_BUFFER_SIZE)
+state_lock = threading.Lock()
+current_prediction = "Nothing"
+
+# Inside the gen_frames() webcam loop:
+prediction_buffer.append(raw_prediction)
+
+if len(prediction_buffer) == PREDICTION_BUFFER_SIZE:
+    # Check if all 3 recent frames predict the exact same gesture
+    if len(set(prediction_buffer)) == 1: 
+        new_pred = prediction_buffer[0]
+        
+        # Implement thread safety for state modification
+        with state_lock:
+            if current_prediction != new_pred:
+                current_prediction = new_pred
+                
+                # Emit to Frontend
+                active_map, _ = get_active_map()
+                sentence = active_map.get(current_prediction, "")
+                socketio.emit('prediction_update', {
+                    'prediction': current_prediction,
+                    'sentence': sentence
+                })</code></pre>
+                </div>
+            </section>
+
+            <!-- 5. Polite Engine -->
+            <section id="polite-engine" class="scroll-mt-24">
+                <h2 class="text-3xl font-heading font-bold mb-8 flex items-center gap-4">
+                    <span class="w-10 h-10 rounded-lg bg-yellow-500/20 text-yellow-400 flex items-center justify-center text-xl">5</span>
+                    The Polite Mode Engine
+                </h2>
+                <div class="glass-card p-8">
+                    <div class="flex items-start gap-6">
+                        <div class="hidden md:flex flex-col items-center justify-center p-6 bg-white/5 border border-white/10 rounded-2xl w-48 text-center shrink-0">
+                            <i class="fas fa-hand-holding-water text-4xl text-cyber-blue mb-4"></i>
+                            <span class="text-gray-400 text-sm">Raw Gesture</span>
+                            <span class="text-white font-bold text-lg">"Water"</span>
+                            <i class="fas fa-arrow-down text-gray-500 my-3"></i>
+                            <span class="text-cyber-green text-sm font-bold">Polite Mode ON</span>
+                            <span class="text-white text-sm mt-2 italic">"Could I please have some water?"</span>
+                        </div>
+                        <div>
+                            <p class="text-gray-300 mb-6">
+                                The true innovation of Ishara Connect lies in its contextual awareness. Sign language is inherently concise. Translating it literally can sound abrupt or commanding. The "Polite Mode" dynamically intercepts the raw prediction and reconstructs the sentence.
+                            </p>
+                            <h3 class="text-xl font-semibold text-white mb-4">Lexicon Mapping Architecture</h3>
+<pre><code class="language-python">ENGLISH_MAP = {
+    "Water": "I need water",
+    "Toilet": "I need the washroom",
+    "Help": "Help me"
+}
+
+ENGLISH_POLITE_MAP = {
+    "Water": "Excuse me, could I please have some water?",
+    "Toilet": "Could you please tell me where the washroom is?",
+    "Help": "Excuse me, would you be able to help me?"
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+             <!-- 6. Frontend -->
+             <section id="frontend" class="scroll-mt-24">
+                <h2 class="text-3xl font-heading font-bold mb-8 flex items-center gap-4">
+                    <span class="w-10 h-10 rounded-lg bg-cyber-blue/20 text-cyber-blue flex items-center justify-center text-xl">6</span>
+                    Frontend Visual Architecture
+                </h2>
+                <div class="glass-card p-8">
+                    <p class="text-gray-300 mb-6">
+                        The frontend is constructed with raw HTML, CSS3, and JavaScript, eschewing bulky frameworks to maintain maximum rendering performance. The UI utilizes "Glassmorphism" to overlay controls on top of animated backgrounds.
+                    </p>
+                    <h3 class="text-xl font-semibold text-white mb-4">Robotic Hand VFX Processing</h3>
+                    <p class="text-gray-300 mb-4">
+                        Instead of rendering basic skeletal lines, the application draws a "Cyberpunk" glowing skeleton over the hands using OpenCV before yielding the frame to the browser.
+                    </p>
+<pre><code class="language-python">def draw_robotic_hands(image, hand_landmarks):
+    h, w, c = image.shape
+    COLOR_ELECTRIC_BLUE = (255, 128, 0)
+    COLOR_CYAN = (255, 255, 0)
+
+    # 1. Draw Energy Beams (Connections)
+    for connection in mp_hands.HAND_CONNECTIONS:
+        start_idx, end_idx = connection[0], connection[1]
+        start_point = (int(hand_landmarks.landmark[start_idx].x * w), 
+                       int(hand_landmarks.landmark[start_idx].y * h))
+        end_point = (int(hand_landmarks.landmark[end_idx].x * w), 
+                     int(hand_landmarks.landmark[end_idx].y * h))
+        
+        # Draw thick blue line, then thin cyan line for a neon glow effect
+        cv2.line(image, start_point, end_point, COLOR_ELECTRIC_BLUE, 4)
+        cv2.line(image, start_point, end_point, COLOR_CYAN, 2)</code></pre>
+                </div>
+            </section>
+
+            <!-- 7. Conclusion -->
+            <section id="conclusion" class="scroll-mt-24 pb-20">
+                <h2 class="text-3xl font-heading font-bold mb-8 flex items-center gap-4">
+                    <span class="w-10 h-10 rounded-lg bg-white/20 text-white flex items-center justify-center text-xl">7</span>
+                    Conclusion & Future Scope
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="glass-card p-8">
+                        <i class="fas fa-microchip text-3xl text-cyber-green mb-4"></i>
+                        <h3 class="text-xl font-bold text-white mb-2">Edge Computing Deployment</h3>
+                        <p class="text-gray-400">
+                            Because the ML model is serialized into a lightweight <code>.p</code> file and the premium neural audio is pre-cached locally, the entire Ishara Connect system can operate seamlessly without an internet connection. It is highly suitable for deployment on low-cost hardware like Raspberry Pi 4 kiosks in rural hospitals or railway stations.
+                        </p>
+                    </div>
+                    <div class="glass-card p-8">
+                        <i class="fas fa-project-diagram text-3xl text-cyber-blue mb-4"></i>
+                        <h3 class="text-xl font-bold text-white mb-2">Dynamic Sequence Modeling</h3>
+                        <p class="text-gray-400">
+                            While the current iteration excels at static survival gestures, the framework can be easily upgraded. By passing the output of <code>utils.extract_keypoints</code> into an LSTM (Long Short-Term Memory) network instead of a Random Forest, the system could translate complex, multi-frame moving sign language sentences.
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Footer -->
+        <footer class="border-t border-white/10 mt-20 pt-10 pb-10 text-center text-gray-500">
+            <p class="font-heading text-lg font-bold text-white mb-2">Ishara Connect</p>
+            <p>Empathetic software engineering to dismantle communication barriers.</p>
+            <p class="mt-4 text-xs tracking-widest uppercase">Report Generated for Architectural Review</p>
+        </footer>
+
+    </main>
+
+    <!-- Scripts -->
+    <!-- Prism JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+
+    <script>
+        // Interactive Canvas Background (Network Nodes)
+        const canvas = document.getElementById('network-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let width, height, particles;
+
+        function initCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            particles = [];
+            
+            const numParticles = Math.min(Math.floor(width * height / 15000), 100);
+            
+            for(let i = 0; i < numParticles; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    vx: (Math.random() - 0.5) * 0.5,
+                    vy: (Math.random() - 0.5) * 0.5,
+                    radius: Math.random() * 2 + 1
+                });
+            }
+        }
+
+        function drawNetwork() {
+            ctx.clearRect(0, 0, width, height);
+            
+            // Update and draw particles
+            for(let i = 0; i < particles.length; i++) {
+                let p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                
+                // Bounce off edges
+                if(p.x < 0 || p.x > width) p.vx *= -1;
+                if(p.y < 0 || p.y > height) p.vy *= -1;
+                
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(0, 242, 96, 0.5)';
+                ctx.fill();
+                
+                // Connect near particles
+                for(let j = i + 1; j < particles.length; j++) {
+                    let p2 = particles[j];
+                    let dx = p.x - p2.x;
+                    let dy = p.y - p2.y;
+                    let dist = Math.sqrt(dx*dx + dy*dy);
+                    
+                    if(dist < 150) {
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.strokeStyle = `rgba(5, 117, 230, ${1 - dist/150})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(drawNetwork);
+        }
+
+        window.addEventListener('resize', initCanvas);
+        initCanvas();
+        drawNetwork();
+
+        // ScrollSpy for Sidebar Active State
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').substring(1) === current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const sidebar = document.getElementById('sidebar');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('hidden');
+            sidebar.classList.toggle('absolute');
+            sidebar.classList.toggle('bg-[#050505]');
+        });
+    </script>
+</body>
+</html>
