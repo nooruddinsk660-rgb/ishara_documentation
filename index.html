@@ -123,6 +123,16 @@
             background: rgba(0,0,0,0.5) !important;
             margin: 1.5rem 0;
         }
+        
+        /* Dictionary Card Hover */
+        .dict-card {
+            transition: all 0.3s ease;
+        }
+        .dict-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(5, 117, 230, 0.5);
+            box-shadow: 0 10px 25px rgba(5, 117, 230, 0.2);
+        }
     </style>
 </head>
 <body class="antialiased selection:bg-cyber-blue selection:text-white flex flex-col md:flex-row min-h-screen">
@@ -165,7 +175,10 @@
                 <a href="#frontend" class="nav-link block py-2 pl-4 border-l-2 border-transparent hover:text-white">6. Visual Architecture</a>
             </li>
             <li>
-                <a href="#conclusion" class="nav-link block py-2 pl-4 border-l-2 border-transparent hover:text-white">7. Future Scope</a>
+                <a href="#dictionary" class="nav-link block py-2 pl-4 border-l-2 border-transparent hover:text-white">7. Sign Dictionary</a>
+            </li>
+            <li>
+                <a href="#conclusion" class="nav-link block py-2 pl-4 border-l-2 border-transparent hover:text-white">8. Future Scope</a>
             </li>
         </ul>
 
@@ -459,10 +472,35 @@ ENGLISH_POLITE_MAP = {
                 </div>
             </section>
 
-            <!-- 7. Conclusion -->
+            <!-- 7. Interactive Sign Dictionary -->
+            <section id="dictionary" class="scroll-mt-24">
+                <h2 class="text-3xl font-heading font-bold mb-8 flex items-center gap-4">
+                    <span class="w-10 h-10 rounded-lg bg-cyber-pink/20 text-cyber-pink flex items-center justify-center text-xl">7</span>
+                    Interactive Sign Dictionary
+                </h2>
+                <div class="glass-card p-8">
+                    <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+                        <p class="text-gray-300 flex-1">
+                            A prototype reference mapping of the gestures utilized by the model. Click any card to view the visual sign language reference on <em>BabySignLanguage.com</em>.
+                        </p>
+                        <!-- Search Bar -->
+                        <div class="relative w-full md:w-64 shrink-0">
+                            <input type="text" id="sign-search" placeholder="Search gestures..." class="w-full bg-black/40 border border-white/20 text-white rounded-full py-2 px-4 pl-10 focus:outline-none focus:border-cyber-green transition-colors">
+                            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        </div>
+                    </div>
+
+                    <!-- Grid of Signs -->
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4" id="sign-grid">
+                        <!-- Items generated via JS to keep HTML clean, mapped from PDF data -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- 8. Conclusion -->
             <section id="conclusion" class="scroll-mt-24 pb-20">
                 <h2 class="text-3xl font-heading font-bold mb-8 flex items-center gap-4">
-                    <span class="w-10 h-10 rounded-lg bg-white/20 text-white flex items-center justify-center text-xl">7</span>
+                    <span class="w-10 h-10 rounded-lg bg-white/20 text-white flex items-center justify-center text-xl">8</span>
                     Conclusion & Future Scope
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -595,6 +633,78 @@ ENGLISH_POLITE_MAP = {
             sidebar.classList.toggle('hidden');
             sidebar.classList.toggle('absolute');
             sidebar.classList.toggle('bg-[#050505]');
+        });
+
+        // --- Interactive Sign Dictionary Logic ---
+        const signsData = [
+            { word: "Nothing", icon: "fa-ban", path: "none" },
+            { word: "Hello", icon: "fa-hand-paper", path: "hello" },
+            { word: "Thank You", icon: "fa-praying-hands", path: "thank-you" },
+            { word: "Good", icon: "fa-thumbs-up", path: "good" },
+            { word: "Bad", icon: "fa-thumbs-down", path: "bad" },
+            { word: "Yes", icon: "fa-check-circle", path: "yes" },
+            { word: "Water", icon: "fa-tint", path: "water" },
+            { word: "Food", icon: "fa-utensils", path: "food" },
+            { word: "Toilet", icon: "fa-restroom", path: "toilet" },
+            { word: "Medicine", icon: "fa-pills", path: "medicine" },
+            { word: "Money", icon: "fa-coins", path: "money" },
+            { word: "Help", icon: "fa-life-ring", path: "help" },
+            { word: "Pain", icon: "fa-heart-broken", path: "hurt" },
+            { word: "Call Doctor", icon: "fa-user-md", path: "doctor" },
+            { word: "Police", icon: "fa-shield-alt", path: "police" },
+            { word: "Home", icon: "fa-home", path: "home" },
+            { word: "What", icon: "fa-question-circle", path: "what" },
+            { word: "Where", icon: "fa-map-marker-alt", path: "where" },
+            { word: "Time", icon: "fa-clock", path: "time" },
+            { word: "I Love You", icon: "fa-heart", path: "i-love-you" },
+            { word: "Stop", icon: "fa-stop-circle", path: "stop" },
+            { word: "No", icon: "fa-times-circle", path: "no" },
+            { word: "Please", icon: "fa-pray", path: "please" },
+            { word: "Sorry", icon: "fa-sad-tear", path: "sorry" },
+            { word: "Friend", icon: "fa-user-friends", path: "friend" },
+            { word: "Mother", icon: "fa-female", path: "mommy" },
+            { word: "Book", icon: "fa-book", path: "book" },
+            { word: "Tea", icon: "fa-mug-hot", path: "drink" },
+            { word: "Name", icon: "fa-id-badge", path: "name" },
+            { word: "Happy", icon: "fa-smile", path: "happy" }
+        ];
+
+        const gridContainer = document.getElementById('sign-grid');
+        const searchInput = document.getElementById('sign-search');
+
+        function renderGrid(data) {
+            gridContainer.innerHTML = '';
+            if (data.length === 0) {
+                gridContainer.innerHTML = `<p class="text-gray-500 col-span-full text-center py-4">No matching gestures found.</p>`;
+                return;
+            }
+            data.forEach(sign => {
+                const a = document.createElement('a');
+                a.href = `https://babysignlanguage.com/dictionary/${sign.path}/`;
+                a.target = "_blank";
+                a.className = "dict-card bg-white/5 border border-white/10 rounded-xl p-4 flex flex-col items-center justify-center text-center group cursor-pointer hover:bg-white/10";
+                
+                a.innerHTML = `
+                    <div class="w-12 h-12 rounded-full bg-black/30 flex items-center justify-center mb-3 group-hover:text-cyber-blue transition-colors">
+                        <i class="fas ${sign.icon} text-xl text-gray-400 group-hover:text-cyber-blue transition-colors"></i>
+                    </div>
+                    <span class="font-bold text-gray-200 group-hover:text-white">${sign.word}</span>
+                    <span class="text-[10px] text-gray-500 mt-1 uppercase tracking-wider group-hover:text-cyber-green transition-colors flex items-center gap-1">
+                        View Sign <i class="fas fa-external-link-alt text-[8px]"></i>
+                    </span>
+                `;
+                gridContainer.appendChild(a);
+            });
+        }
+
+        // Initial render
+        renderGrid(signsData);
+
+        // Search filtering
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = signsData.filter(sign => sign.word.toLowerCase().includes(term));
+            renderGrid(filtered);
         });
     </script>
 </body>
