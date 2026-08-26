@@ -1,16 +1,17 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" class="scroll-smooth dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ishara Connect | System Documentation</title>
+    <meta name="description" content="Ishara Connect — Next-Generation Real-Time Sign Language AI Interpreter, Emergency Triage & Multi-Tenant Caregiver Telemetry. Architecture, Mathematics & Interactive Documentation.">
+    <title>Ishara Connect | Next-Gen AI Sign Language Platform & Telemetry</title>
     
-    <!-- Google Fonts -->
+    <!-- Google Fonts: Plus Jakarta Sans, Outfit & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
     
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS with custom configuration -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -18,17 +19,51 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Noto Sans', 'sans-serif'],
-                        heading: ['Outfit', 'sans-serif'],
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        heading: ['"Outfit"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                        bengali: ['"Noto Sans Bengali"', 'sans-serif'],
+                        hindi: ['"Noto Sans Devanagari"', 'sans-serif']
                     },
                     colors: {
                         cyber: {
-                            bg: '#050505',
-                            card: 'rgba(255, 255, 255, 0.03)',
+                            bg: '#040711',
+                            card: 'rgba(12, 19, 38, 0.65)',
+                            cardLight: 'rgba(255, 255, 255, 0.85)',
                             border: 'rgba(255, 255, 255, 0.08)',
-                            green: '#00f260',
-                            blue: '#0575E6',
-                            pink: '#ff0099'
+                            borderLight: 'rgba(0, 0, 0, 0.08)',
+                            emerald: '#00F29D',
+                            azure: '#0070F3',
+                            violet: '#7928CA',
+                            crimson: '#FF0055',
+                            amber: '#FFB800',
+                            glow: 'rgba(0, 242, 157, 0.15)'
+                        }
+                    },
+                    boxShadow: {
+                        'neon-emerald': '0 0 25px -5px rgba(0, 242, 157, 0.4)',
+                        'neon-azure': '0 0 25px -5px rgba(0, 112, 243, 0.4)',
+                        'neon-crimson': '0 0 25px -5px rgba(255, 0, 85, 0.5)',
+                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)'
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'shimmer': 'shimmer 2.5s linear infinite',
+                        'scanline': 'scanline 8s linear infinite'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' }
+                        },
+                        scanline: {
+                            '0%': { transform: 'translateY(-100%)' },
+                            '100%': { transform: 'translateY(1000%)' }
                         }
                     }
                 }
@@ -36,675 +71,1845 @@
         }
     </script>
 
-    <!-- Prism.js for Code Highlighting -->
+    <!-- FontAwesome 6.5 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Prism.js for Syntax Highlighting -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet" />
 
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- KaTeX for crisp mathematical formulas -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+
+    <!-- Mermaid.js for architectural diagrams -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                darkMode: true,
+                background: '#0a0f24',
+                primaryColor: '#00F29D',
+                primaryTextColor: '#fff',
+                primaryBorderColor: '#00F29D',
+                lineColor: '#0070F3',
+                secondaryColor: '#7928CA',
+                tertiaryColor: '#121d3f'
+            }
+        });
+    </script>
 
     <style>
-        body {
-            background-color: #050505;
-            color: #e2e8f0;
-            overflow-x: hidden;
+        :root {
+            --bg-main: #040711;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --glass-bg: rgba(10, 16, 35, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --accent-green: #00F29D;
+            --accent-blue: #0070F3;
         }
 
-        /* Interactive Canvas Background */
-        #network-canvas {
+        .light {
+            --bg-main: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --glass-bg: rgba(255, 255, 255, 0.88);
+            --glass-border: rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Ambient interactive particle canvas */
+        #bg-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            z-index: -1;
-            opacity: 0.4;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.55;
         }
 
-        /* Glassmorphism Classes */
-        .glass-card {
-            background: var(--card-bg, rgba(20, 20, 30, 0.4));
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--card-border, rgba(255, 255, 255, 0.1));
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-            border-radius: 1.5rem;
+        /* Glassmorphic Cards */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.3);
+            border-radius: 1.25rem;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* Custom Scrollbar */
+        .glass-panel:hover {
+            border-color: rgba(0, 242, 157, 0.3);
+        }
+
+        /* Gradient Glow Texts */
+        .text-glow-gradient {
+            background: linear-gradient(135deg, #00F29D 0%, #0070F3 50%, #7928CA 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .text-crimson-gradient {
+            background: linear-gradient(135deg, #FF0055 0%, #FFB800 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Smooth Custom Scrollbar */
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 7px;
+            height: 7px;
         }
         ::-webkit-scrollbar-track {
-            background: #050505;
+            background: #040711;
         }
         ::-webkit-scrollbar-thumb {
-            background: #333;
-            border-radius: 4px;
+            background: #1e293b;
+            border-radius: 9999px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #00f260;
+            background: #00F29D;
         }
 
-        /* Typography Gradients */
-        .text-gradient {
-            background: linear-gradient(90deg, #00f260, #0575E6, #ff0099);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shine 5s linear infinite;
+        /* Active Navigation Link Indicator */
+        .nav-item.active {
+            color: #00F29D;
+            background: rgba(0, 242, 157, 0.08);
+            border-left: 3px solid #00F29D;
+            padding-left: 1rem;
         }
 
-        @keyframes shine {
-            to { background-position: 200% center; }
-        }
-
-        /* Sidebar Navigation Active State */
-        .nav-link.active {
-            color: #00f260;
-            border-left-color: #00f260;
-            background: rgba(0, 242, 96, 0.1);
-        }
-
-        .nav-link {
-            transition: all 0.3s ease;
-        }
-        .nav-link:hover {
-            color: #0575E6;
-            border-left-color: #0575E6;
-            padding-left: 1.5rem;
-        }
-
-        /* Code Block Adjustments */
+        /* Code block stylings */
         pre[class*="language-"] {
-            border-radius: 1rem;
-            border: 1px solid rgba(255,255,255,0.1);
-            background: rgba(0,0,0,0.5) !important;
-            margin: 1.5rem 0;
+            border-radius: 0.875rem !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            background: #070d1e !important;
+            font-size: 0.84rem !important;
+            padding: 1.25rem !important;
         }
-        
-        /* Dictionary Card Hover */
-        .dict-card {
-            transition: all 0.3s ease;
+
+        /* Interactive Hand Visualizer Joints */
+        .joint-node {
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), fill 0.2s ease, stroke 0.2s ease;
+            cursor: pointer;
         }
-        .dict-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(5, 117, 230, 0.5);
-            box-shadow: 0 10px 25px rgba(5, 117, 230, 0.2);
+        .joint-node:hover {
+            transform: scale(1.6);
+            filter: drop-shadow(0 0 8px #00F29D);
+        }
+
+        /* Interactive Chip / Tab */
+        .interactive-chip {
+            transition: all 0.2s ease;
+        }
+        .interactive-chip:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Audio Waveform simulation */
+        .waveform-bar {
+            animation: wave 1.2s ease-in-out infinite alternate;
+        }
+        @keyframes wave {
+            0% { height: 4px; }
+            100% { height: 28px; }
+        }
+
+        /* Emergency Flashing Banner */
+        .emergency-flash {
+            animation: flashBorder 0.8s ease-in-out infinite alternate;
+        }
+        @keyframes flashBorder {
+            0% { box-shadow: 0 0 10px rgba(255, 0, 85, 0.3); border-color: rgba(255, 0, 85, 0.4); }
+            100% { box-shadow: 0 0 35px rgba(255, 0, 85, 0.8); border-color: rgba(255, 0, 85, 1); }
         }
     </style>
 </head>
-<body class="antialiased selection:bg-cyber-blue selection:text-white flex flex-col md:flex-row min-h-screen">
+<body class="selection:bg-cyber-emerald selection:text-black font-sans antialiased min-h-screen flex flex-col">
 
-    <!-- Interactive Background -->
-    <canvas id="network-canvas"></canvas>
+    <!-- Ambient Dynamic Background Canvas -->
+    <canvas id="bg-canvas"></canvas>
 
-    <!-- Mobile Header -->
-    <header class="md:hidden glass-card m-4 p-4 sticky top-4 z-50 flex justify-between items-center">
-        <h1 class="font-heading font-bold text-xl text-gradient">Ishara Connect</h1>
-        <button id="mobile-menu-btn" class="text-gray-300 hover:text-white">
-            <i class="fas fa-bars text-2xl"></i>
-        </button>
+    <!-- Reading Progress Bar -->
+    <div id="progress-bar" class="fixed top-0 left-0 h-1 bg-gradient-to-r from-cyber-emerald via-cyber-azure to-cyber-violet z-50 transition-all duration-75 w-0"></div>
+
+    <!-- Top Floating Navbar -->
+    <header class="sticky top-0 z-40 w-full border-b border-white/10 glass-panel backdrop-blur-xl bg-cyber-bg/80 px-4 lg:px-8 py-3.5 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <button id="mobile-toggle" class="lg:hidden p-2 rounded-lg bg-white/5 border border-white/10 text-gray-300 hover:text-white" aria-label="Toggle Navigation">
+                <i class="fas fa-bars-staggered text-lg"></i>
+            </button>
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyber-emerald to-cyber-azure flex items-center justify-center text-black font-black text-xl shadow-neon-emerald group-hover:scale-105 transition-transform">
+                    🤟
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="font-heading font-black text-xl tracking-tight text-white group-hover:text-cyber-emerald transition-colors">Ishara Connect</span>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-cyber-emerald/10 text-cyber-emerald border border-cyber-emerald/30 font-mono font-semibold">v2.4 LTS</span>
+                    </div>
+                    <p class="text-[11px] text-gray-400 font-mono tracking-wider">ইশারা কানেক্ট · इशारा कनेक्ट</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- Quick Center Links -->
+        <div class="hidden md:flex items-center gap-6 text-sm font-medium text-gray-400">
+            <a href="#topology" class="hover:text-cyber-emerald transition-colors">21-Pt Topology</a>
+            <a href="#math" class="hover:text-cyber-emerald transition-colors">Spatial Math</a>
+            <a href="#simulator" class="hover:text-cyber-emerald transition-colors">Polite AI Simulator</a>
+            <a href="#dictionary" class="hover:text-cyber-emerald transition-colors">30 Gestures</a>
+            <a href="#emergency" class="hover:text-cyber-emerald transition-colors">Emergency SOS</a>
+            <a href="#dashboard" class="hover:text-cyber-emerald transition-colors">Caregiver Portal</a>
+            <a href="#quickstart" class="hover:text-cyber-emerald transition-colors">Quickstart</a>
+        </div>
+
+        <!-- Right Quick Actions -->
+        <div class="flex items-center gap-2 sm:gap-3">
+            <button id="search-trigger" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-gray-400 text-xs hover:border-cyber-emerald/50 hover:text-white transition-all">
+                <i class="fas fa-search text-[11px]"></i>
+                <span class="hidden sm:inline">Search Docs...</span>
+                <kbd class="hidden sm:inline px-1.5 py-0.5 text-[10px] bg-black/40 rounded border border-white/10 font-mono text-gray-300">Ctrl K</kbd>
+            </button>
+
+            <!-- Theme Toggle -->
+            <button id="theme-toggle" class="p-2 rounded-lg bg-white/5 border border-white/10 text-gray-300 hover:text-cyber-amber transition-all" title="Toggle Theme">
+                <i class="fas fa-sun text-sm" id="theme-icon"></i>
+            </button>
+
+            <!-- GitHub Star -->
+            <a href="https://github.com/nooruddinsk660-rgb/ishara-connect" target="_blank" class="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-white font-medium text-xs transition-all shadow-sm">
+                <i class="fab fa-github text-sm"></i>
+                <span>Star Repo</span>
+            </a>
+        </div>
     </header>
 
-    <!-- Sidebar Navigation -->
-    <nav id="sidebar" class="hidden md:flex flex-col w-full md:w-72 h-screen sticky top-0 border-r border-white/10 glass-card md:rounded-none md:border-y-0 p-6 z-40 overflow-y-auto">
-        <div class="mb-10 mt-4">
-            <h1 class="font-heading font-black text-3xl tracking-tight text-gradient mb-2">Ishara Connect</h1>
-            <p class="text-xs text-gray-400 uppercase tracking-widest">System Architecture</p>
-        </div>
+    <!-- Main Container -->
+    <div class="flex-1 flex max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 gap-8 relative z-10">
 
-        <ul class="space-y-2 text-sm font-medium text-gray-400">
-            <li>
-                <a href="#intro" class="nav-link block py-2 pl-4 border-l-2 border-transparent hover:text-white">1. Introduction</a>
-            </li>
-            <li>
-                <a href="#pipeline" class="nav-link block py-2 pl-4 border-l-2 border-transparent hover:text-white">2. Data Pipeline</a>
-            </li>
-            <li>
-                <a href="#ml" class="nav-link block py-2 pl-4 border-l-2 border-transparent hover:text-white">3. Machine Learning</a>
-            </li>
-            <li>
-                <a href="#backend" class="nav-link block py-2 pl-4 border-l-2 border-transparent hover:text-white">4. Backend Server</a>
-            </li>
-            <li>
-                <a href="#polite-engine" class="nav-link block py-2 pl-4 border-l-2 border-transparent hover:text-white">5. Polite Engine</a>
-            </li>
-            <li>
-                <a href="#frontend" class="nav-link block py-2 pl-4 border-l-2 border-transparent hover:text-white">6. Visual Architecture</a>
-            </li>
-            <li>
-                <a href="#dictionary" class="nav-link block py-2 pl-4 border-l-2 border-transparent hover:text-white">7. Sign Dictionary</a>
-            </li>
-            <li>
-                <a href="#conclusion" class="nav-link block py-2 pl-4 border-l-2 border-transparent hover:text-white">8. Future Scope</a>
-            </li>
-        </ul>
-
-        <div class="mt-auto pt-10">
-            <div class="p-4 rounded-xl bg-white/5 border border-white/10">
-                <p class="text-xs text-gray-400 mb-1">Submitted By:</p>
-                <p class="font-bold text-white text-sm">Sk Nooruddin</p>
-                <p class="font-bold text-white text-sm">Sumaiya Laskar</p>
-                <p class="text-xs text-cyber-blue mt-1">DCST, 2nd Year</p>
+        <!-- Left Sticky Sidebar Navigation (Desktop) -->
+        <aside id="sidebar" class="hidden lg:flex flex-col w-64 shrink-0 sticky top-24 h-[calc(100vh-7rem)] overflow-y-auto pr-3 space-y-6">
+            <div class="text-xs font-mono font-bold text-gray-400 uppercase tracking-wider px-3">
+                Documentation Index
             </div>
-        </div>
-    </nav>
 
-    <!-- Main Content -->
-    <main class="flex-1 p-6 md:p-12 lg:p-20 overflow-x-hidden">
-        <div class="max-w-4xl mx-auto space-y-24">
-            
-            <!-- Hero Section -->
-            <section id="hero" class="min-h-[70vh] flex flex-col justify-center pt-10">
-                <div class="inline-block px-4 py-1.5 rounded-full border border-cyber-green/30 bg-cyber-green/10 text-cyber-green text-sm font-semibold tracking-wide mb-6 w-max shadow-[0_0_15px_rgba(0,242,96,0.2)]">
-                    <i class="fas fa-satellite-dish mr-2 animate-pulse"></i> Documentation v1.0
+            <nav class="space-y-1 text-sm font-medium">
+                <a href="#overview" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition-all active">
+                    <i class="fas fa-compass text-xs text-cyber-emerald w-4 text-center"></i>
+                    <span>1. Executive Overview</span>
+                </a>
+                <a href="#features" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition-all">
+                    <i class="fas fa-sparkles text-xs text-cyber-azure w-4 text-center"></i>
+                    <span>2. Core Capabilities</span>
+                </a>
+                <a href="#topology" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition-all">
+                    <i class="fas fa-hand text-xs text-cyber-violet w-4 text-center"></i>
+                    <span>3. 21-Point Landmark 3D</span>
+                </a>
+                <a href="#math" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition-all">
+                    <i class="fas fa-square-root-variable text-xs text-cyber-emerald w-4 text-center"></i>
+                    <span>4. Spatial Math Invariance</span>
+                </a>
+                <a href="#ml" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition-all">
+                    <i class="fas fa-brain text-xs text-cyber-azure w-4 text-center"></i>
+                    <span>5. ML & Anti-Leakage Split</span>
+                </a>
+                <a href="#simulator" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition-all">
+                    <i class="fas fa-comment-dots text-xs text-cyber-amber w-4 text-center"></i>
+                    <span>6. Polite Mode AI Simulator</span>
+                </a>
+                <a href="#dictionary" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition-all">
+                    <i class="fas fa-book-bookmark text-xs text-cyber-emerald w-4 text-center"></i>
+                    <span>7. 30 Gestures Dictionary</span>
+                </a>
+                <a href="#emergency" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition-all">
+                    <i class="fas fa-truck-medical text-xs text-cyber-crimson w-4 text-center"></i>
+                    <span>8. Emergency SOS Triage</span>
+                </a>
+                <a href="#dashboard" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition-all">
+                    <i class="fas fa-hospital-user text-xs text-cyber-azure w-4 text-center"></i>
+                    <span>9. Multi-Tenant Telemetry</span>
+                </a>
+                <a href="#architecture" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition-all">
+                    <i class="fas fa-diagram-project text-xs text-cyber-violet w-4 text-center"></i>
+                    <span>10. Architecture & Database</span>
+                </a>
+                <a href="#quickstart" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition-all">
+                    <i class="fas fa-terminal text-xs text-cyber-emerald w-4 text-center"></i>
+                    <span>11. Quickstart & Deployment</span>
+                </a>
+                <a href="#api" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition-all">
+                    <i class="fas fa-network-wired text-xs text-cyber-azure w-4 text-center"></i>
+                    <span>12. WebSocket API Reference</span>
+                </a>
+                <a href="#roadmap" class="nav-item flex items-center gap-3 px-3 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition-all">
+                    <i class="fas fa-road text-xs text-cyber-amber w-4 text-center"></i>
+                    <span>13. Roadmap & Horizons</span>
+                </a>
+            </nav>
+
+            <!-- Research & Author Badge -->
+            <div class="mt-auto p-4 rounded-xl bg-gradient-to-b from-white/5 to-white/[0.02] border border-white/10 text-xs">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="w-2 h-2 rounded-full bg-cyber-emerald animate-ping"></span>
+                    <span class="font-mono text-[11px] text-cyber-emerald font-semibold uppercase">Active Research</span>
                 </div>
-                <h1 class="text-5xl md:text-7xl font-heading font-black leading-tight mb-6">
-                    Breaking the Walls of <br>
-                    <span class="text-gradient">Silence,</span> One Gesture <br>at a Time.
-                </h1>
-                <p class="text-xl text-gray-400 max-w-2xl leading-relaxed mb-10">
-                    Comprehensive System Architecture & Source Code Analysis of an AI-Powered Multilingual Gesture Communication Platform.
-                </p>
-                <div class="flex gap-4">
-                    <a href="#intro" class="px-8 py-4 rounded-xl bg-white text-black font-bold hover:bg-gray-200 transition shadow-[0_0_20px_rgba(255,255,255,0.3)]">
-                        Explore Architecture
-                    </a>
-                    <a href="https://github.com" target="_blank" class="px-8 py-4 rounded-xl glass-card text-white font-bold hover:bg-white/10 transition flex items-center gap-2">
-                        <i class="fab fa-github text-xl"></i> View Source
-                    </a>
+                <p class="text-gray-400">Principal Author:</p>
+                <p class="font-bold text-white text-sm">Sk Nooruddin</p>
+                <p class="text-[11px] text-gray-400 mt-1">Lead AI & Full-Stack Architect</p>
+                <div class="mt-3 pt-3 border-t border-white/10 flex items-center justify-between text-gray-400">
+                    <span class="font-mono text-[10px]">MIT License</span>
+                    <a href="https://github.com/nooruddinsk660-rgb" target="_blank" class="hover:text-cyber-emerald"><i class="fab fa-github"></i> @nooruddin</a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Stream -->
+        <main class="flex-1 min-w-0 space-y-20 pb-24">
+
+            <!-- HERO SECTION -->
+            <section id="overview" class="glass-panel p-8 sm:p-12 relative overflow-hidden">
+                <!-- Background Ambient Glow Orbs -->
+                <div class="absolute -top-24 -right-24 w-80 h-80 bg-cyber-azure/20 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-24 -left-24 w-80 h-80 bg-cyber-emerald/20 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="relative z-10">
+                    <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-cyber-emerald/10 border border-cyber-emerald/30 text-cyber-emerald text-xs font-mono font-semibold mb-6 shadow-sm">
+                        <span class="w-2 h-2 rounded-full bg-cyber-emerald animate-pulse"></span>
+                        State-of-the-Art Assistive AI Platform
+                    </div>
+
+                    <h1 class="text-4xl sm:text-6xl lg:text-7xl font-heading font-black tracking-tight leading-[1.08] mb-6">
+                        Breaking the Walls of <br>
+                        <span class="text-glow-gradient">Silence,</span> One Gesture <br>at a Time.
+                    </h1>
+
+                    <p class="text-lg sm:text-xl text-gray-300 max-w-3xl leading-relaxed font-light mb-8">
+                        <strong class="text-white font-semibold">Ishara Connect</strong> is an ultra-low-latency, dual-sided assistive communication ecosystem synthesized with <strong>Google MediaPipe Vision</strong>, <strong>126-D Spatial Vector Normalization</strong>, <strong>Random Forest Ensemble ML</strong>, and <strong>Multi-Tenant Caregiver Telemetry</strong>.
+                    </p>
+
+                    <!-- Key Stats Grid -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 my-8">
+                        <div class="p-4 rounded-xl bg-black/30 border border-white/10">
+                            <div class="text-2xl sm:text-3xl font-heading font-bold text-cyber-emerald">&lt;15 ms</div>
+                            <div class="text-xs text-gray-400 mt-1 font-mono">CPU Inference Latency</div>
+                        </div>
+                        <div class="p-4 rounded-xl bg-black/30 border border-white/10">
+                            <div class="text-2xl sm:text-3xl font-heading font-bold text-cyber-azure">126-D</div>
+                            <div class="text-xs text-gray-400 mt-1 font-mono">Spatial Feature Vector</div>
+                        </div>
+                        <div class="p-4 rounded-xl bg-black/30 border border-white/10">
+                            <div class="text-2xl sm:text-3xl font-heading font-bold text-cyber-violet">30 Signs</div>
+                            <div class="text-xs text-gray-400 mt-1 font-mono">Core Lexicon Classes</div>
+                        </div>
+                        <div class="p-4 rounded-xl bg-black/30 border border-white/10">
+                            <div class="text-2xl sm:text-3xl font-heading font-bold text-cyber-amber">3 Dialects</div>
+                            <div class="text-xs text-gray-400 mt-1 font-mono">EN · HI (हिंदी) · BN (বাংলা)</div>
+                        </div>
+                    </div>
+
+                    <!-- Call to Action Buttons -->
+                    <div class="flex flex-wrap items-center gap-4 pt-2">
+                        <a href="#simulator" class="px-6 py-3.5 rounded-xl bg-gradient-to-r from-cyber-emerald to-cyber-azure text-black font-heading font-bold text-sm hover:opacity-95 shadow-neon-emerald transition-all flex items-center gap-2">
+                            <i class="fas fa-play text-xs"></i>
+                            Launch Live Simulator
+                        </a>
+                        <a href="#topology" class="px-6 py-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 text-white font-heading font-semibold text-sm transition-all flex items-center gap-2">
+                            <i class="fas fa-cube text-xs text-cyber-emerald"></i>
+                            Inspect 3D Hand Model
+                        </a>
+                        <a href="#architecture" class="px-6 py-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 text-gray-300 hover:text-white font-heading font-semibold text-sm transition-all flex items-center gap-2">
+                            <i class="fas fa-database text-xs text-cyber-azure"></i>
+                            Architecture Schema
+                        </a>
+                    </div>
                 </div>
             </section>
 
-            <!-- 1. Introduction -->
-            <section id="intro" class="scroll-mt-24">
-                <h2 class="text-3xl font-heading font-bold mb-8 flex items-center gap-4">
-                    <span class="w-10 h-10 rounded-lg bg-cyber-blue/20 text-cyber-blue flex items-center justify-center text-xl">1</span>
-                    Introduction & Impact Framing
-                </h2>
-                <div class="glass-card p-8 space-y-6 text-gray-300 leading-relaxed">
-                    <h3 class="text-xl font-semibold text-white">The Communication Asymmetry Problem</h3>
-                    <p>
-                        According to global accessibility metrics, millions of speech-impaired individuals rely heavily on sign language as their primary mode of communication. However, over 90% of the general populace does not understand sign language. This disparity creates a profound communication barrier in daily life, especially in high-stakes environments such as healthcare, education, and emergency services.
-                    </p>
-                    <p>
-                        The fundamental issue is not the physical disability itself, but the lack of an instantaneous, bidirectional translation medium. When a deaf or mute individual attempts to communicate, the burden of interpretation falls entirely on the untrained listener.
-                    </p>
-                    <div class="h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent my-6"></div>
-                    <h3 class="text-xl font-semibold text-white">The Ishara Connect Solution</h3>
-                    <p>
-                        Ishara Connect addresses this problem directly by functioning as a real-time, AI-driven bridge. It is a robust web application that utilizes advanced Computer Vision to track hand movements and Machine Learning to classify these movements into distinct lexical concepts.
-                    </p>
-                    <ul class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-                        <li class="bg-white/5 p-4 rounded-xl border border-white/10">
-                            <i class="fas fa-exchange-alt text-cyber-green text-2xl mb-3"></i>
-                            <strong class="block text-white mb-2">Bidirectional</strong>
-                            "Listen to Reply" feature transcribes spoken language back to the user.
-                        </li>
-                        <li class="bg-white/5 p-4 rounded-xl border border-white/10">
-                            <i class="fas fa-heart text-cyber-pink text-2xl mb-3"></i>
-                            <strong class="block text-white mb-2">Contextual Politeness</strong>
-                            AI module refines raw gestures into socially conscious requests.
-                        </li>
-                        <li class="bg-white/5 p-4 rounded-xl border border-white/10">
-                            <i class="fas fa-globe-asia text-cyber-blue text-2xl mb-3"></i>
-                            <strong class="block text-white mb-2">Multilingual</strong>
-                            Native audio synthesis for English, Hindi, and Bengali.
-                        </li>
-                    </ul>
+            <!-- SECTION 2: CORE CAPABILITIES -->
+            <section id="features" class="space-y-6 scroll-mt-24">
+                <div class="flex items-center gap-3">
+                    <span class="w-8 h-8 rounded-lg bg-cyber-azure/20 text-cyber-azure flex items-center justify-center font-mono font-bold text-sm">02</span>
+                    <h2 class="text-2xl sm:text-3xl font-heading font-bold text-white">Engineered for Real-World Clinical Impact</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Feature 1 -->
+                    <div class="glass-panel p-6 space-y-4 hover:border-cyber-emerald/40 transition-all">
+                        <div class="w-12 h-12 rounded-xl bg-cyber-emerald/10 border border-cyber-emerald/30 text-cyber-emerald flex items-center justify-center text-xl">
+                            🖐️
+                        </div>
+                        <h3 class="text-lg font-heading font-bold text-white">Zero-Latency Vision AI</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed">
+                            WebRTC camera frames streamed through lightweight JPEG compression canvases, extracting 21 spatial landmarks per hand without video persistence.
+                        </p>
+                    </div>
+
+                    <!-- Feature 2 -->
+                    <div class="glass-panel p-6 space-y-4 hover:border-cyber-azure/40 transition-all">
+                        <div class="w-12 h-12 rounded-xl bg-cyber-azure/10 border border-cyber-azure/30 text-cyber-azure flex items-center justify-center text-xl">
+                            🗣️
+                        </div>
+                        <h3 class="text-lg font-heading font-bold text-white">Contextual Polite Mode</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed">
+                            Automatically rewrites raw sign imperatives into respectful natural requests across English, Bengali, and Hindi with pre-cached Edge neural voicebanks.
+                        </p>
+                    </div>
+
+                    <!-- Feature 3 -->
+                    <div class="glass-panel p-6 space-y-4 hover:border-cyber-crimson/40 transition-all">
+                        <div class="w-12 h-12 rounded-xl bg-cyber-crimson/10 border border-cyber-crimson/30 text-cyber-crimson flex items-center justify-center text-xl">
+                            🚨
+                        </div>
+                        <h3 class="text-lg font-heading font-bold text-white">Emergency SOS Triage</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed">
+                            Sub-millisecond keyword interception for urgent distress signals (<code class="text-cyber-crimson text-xs">Pain</code>, <code class="text-cyber-crimson text-xs">Doctor</code>) triggering high-priority caregiver dispatch.
+                        </p>
+                    </div>
+
+                    <!-- Feature 4 -->
+                    <div class="glass-panel p-6 space-y-4 hover:border-cyber-violet/40 transition-all">
+                        <div class="w-12 h-12 rounded-xl bg-cyber-violet/10 border border-cyber-violet/30 text-cyber-violet flex items-center justify-center text-xl">
+                            👂
+                        </div>
+                        <h3 class="text-lg font-heading font-bold text-white">"Listen to Reply" Bridge</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed">
+                            Two-way conversational reciprocity: browser-native speech-to-text dictation allows hearing individuals to speak and renders dynamic high-contrast subtitles for the signer.
+                        </p>
+                    </div>
+
+                    <!-- Feature 5 -->
+                    <div class="glass-panel p-6 space-y-4 hover:border-cyber-amber/40 transition-all">
+                        <div class="w-12 h-12 rounded-xl bg-cyber-amber/10 border border-cyber-amber/30 text-cyber-amber flex items-center justify-center text-xl">
+                            🏥
+                        </div>
+                        <h3 class="text-lg font-heading font-bold text-white">Multi-Tenant Caregiver Portal</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed">
+                            Role-based monitoring dashboard with strict institution boundary isolation, live session telemetry, confidence graphs, and alert acknowledgment audits.
+                        </p>
+                    </div>
+
+                    <!-- Feature 6 -->
+                    <div class="glass-panel p-6 space-y-4 hover:border-cyber-emerald/40 transition-all">
+                        <div class="w-12 h-12 rounded-xl bg-cyber-emerald/10 border border-cyber-emerald/30 text-cyber-emerald flex items-center justify-center text-xl">
+                            🛡️
+                        </div>
+                        <h3 class="text-lg font-heading font-bold text-white">Privacy-by-Design Protocol</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed">
+                            Zero raw video, frame buffers, or coordinate arrays are stored in database disks. Only high-level abstracted linguistic phrase tokens are recorded, strictly HIPAA/GDPR compliant.
+                        </p>
+                    </div>
                 </div>
             </section>
 
-            <!-- 2. Data Pipeline -->
-            <section id="pipeline" class="scroll-mt-24">
-                <h2 class="text-3xl font-heading font-bold mb-8 flex items-center gap-4">
-                    <span class="w-10 h-10 rounded-lg bg-cyber-pink/20 text-cyber-pink flex items-center justify-center text-xl">2</span>
-                    Data Collection & Normalization
-                </h2>
-                
-                <div class="glass-card p-8 mb-8">
-                    <h3 class="text-xl font-semibold text-white mb-4">MediaPipe Landmark Extraction</h3>
-                    <p class="text-gray-300 mb-6">
-                        The system utilizes Google's MediaPipe framework, which isolates human hands in a 2D video feed and maps them to a 3D coordinate space containing 21 distinct landmarks per hand.
+            <!-- SECTION 3: 21-POINT HAND TOPOLOGY & INTERACTIVE 3D/2D VIEWER -->
+            <section id="topology" class="space-y-6 scroll-mt-24">
+                <div class="flex items-center justify-between flex-wrap gap-4">
+                    <div class="flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-lg bg-cyber-violet/20 text-cyber-violet flex items-center justify-center font-mono font-bold text-sm">03</span>
+                        <h2 class="text-2xl sm:text-3xl font-heading font-bold text-white">21-Point Hand Landmarking Topology</h2>
+                    </div>
+                    <span class="text-xs font-mono text-gray-400 bg-white/5 px-3 py-1.5 rounded-lg border border-white/10">
+                        2 Hands × 21 Joints × (x, y, z) = 126-D Vector
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Interactive Visual SVG Canvas -->
+                    <div class="lg:col-span-7 glass-panel p-6 flex flex-col justify-between relative overflow-hidden">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-xs font-mono text-cyber-emerald font-semibold flex items-center gap-2">
+                                <i class="fas fa-hand-pointer"></i> Click any landmark node to inspect coordinates
+                            </span>
+                            <div class="flex gap-2">
+                                <button id="btn-toggle-centering" class="px-2.5 py-1 text-xs font-mono rounded bg-white/5 border border-white/10 hover:border-cyber-emerald text-gray-300">Origin Centered</button>
+                                <button id="btn-reset-hand" class="px-2.5 py-1 text-xs font-mono rounded bg-white/5 border border-white/10 hover:text-white text-gray-400">Reset</button>
+                            </div>
+                        </div>
+
+                        <!-- SVG Hand Model Canvas -->
+                        <div class="relative w-full aspect-[4/3] bg-black/40 rounded-xl border border-white/10 flex items-center justify-center p-4">
+                            <svg id="hand-svg" viewBox="0 0 400 320" class="w-full h-full">
+                                <!-- Connection Bones -->
+                                <g id="hand-bones" stroke="rgba(0, 242, 157, 0.4)" stroke-width="3" stroke-linecap="round">
+                                    <!-- Palm Base Connections -->
+                                    <line x1="200" y1="280" x2="130" y2="230" /> <!-- 0-1 -->
+                                    <line x1="200" y1="280" x2="165" y2="175" /> <!-- 0-5 -->
+                                    <line x1="200" y1="280" x2="200" y2="165" /> <!-- 0-9 Wrist to Middle MCP -->
+                                    <line x1="200" y1="280" x2="235" y2="175" /> <!-- 0-13 -->
+                                    <line x1="200" y1="280" x2="270" y2="195" /> <!-- 0-17 -->
+                                    
+                                    <!-- Palm Arch -->
+                                    <line x1="165" y1="175" x2="200" y2="165" />
+                                    <line x1="200" y1="165" x2="235" y2="175" />
+                                    <line x1="235" y1="175" x2="270" y2="195" />
+
+                                    <!-- Thumb: 1 -> 2 -> 3 -> 4 -->
+                                    <line x1="130" y1="230" x2="100" y2="190" />
+                                    <line x1="100" y1="190" x2="80" y2="155" />
+                                    <line x1="80" y1="155" x2="65" y2="125" />
+
+                                    <!-- Index: 5 -> 6 -> 7 -> 8 -->
+                                    <line x1="165" y1="175" x2="155" y2="125" />
+                                    <line x1="155" y1="125" x2="150" y2="85" />
+                                    <line x1="150" y1="85" x2="145" y2="45" />
+
+                                    <!-- Middle: 9 -> 10 -> 11 -> 12 -->
+                                    <line x1="200" y1="165" x2="200" y2="115" stroke="rgba(0, 112, 243, 0.8)" stroke-width="4" />
+                                    <line x1="200" y1="115" x2="200" y2="75" />
+                                    <line x1="200" y1="75" x2="200" y2="35" />
+
+                                    <!-- Ring: 13 -> 14 -> 15 -> 16 -->
+                                    <line x1="235" y1="175" x2="242" y2="125" />
+                                    <line x1="242" y1="125" x2="247" y2="85" />
+                                    <line x1="247" y1="85" x2="252" y2="50" />
+
+                                    <!-- Pinky: 17 -> 18 -> 19 -> 20 -->
+                                    <line x1="270" y1="195" x2="280" y2="150" />
+                                    <line x1="280" y1="150" x2="290" y2="115" />
+                                    <line x1="290" y1="115" x2="300" y2="85" />
+                                    
+                                    <!-- Scale Vector Normalizer Line -->
+                                    <line x1="200" y1="280" x2="200" y2="165" stroke="#FFB800" stroke-width="3" stroke-dasharray="4,4" id="scale-line" />
+                                </g>
+
+                                <!-- 21 Landmark Nodes -->
+                                <g id="hand-nodes">
+                                    <circle id="node-0" class="joint-node" cx="200" cy="280" r="7" fill="#00F29D" stroke="#ffffff" stroke-width="2" data-idx="0" data-name="WRIST" data-norm="[0.000, 0.000, 0.000]" data-desc="Origin Anchor (Center Point L0)" />
+                                    
+                                    <!-- Thumb -->
+                                    <circle id="node-1" class="joint-node" cx="130" cy="230" r="5" fill="#0070F3" stroke="#fff" stroke-width="1.5" data-idx="1" data-name="THUMB_CMC" data-norm="[-0.608, -0.434, -0.052]" data-desc="Carpometacarpal Joint" />
+                                    <circle id="node-2" class="joint-node" cx="100" cy="190" r="5" fill="#0070F3" stroke="#fff" stroke-width="1.5" data-idx="2" data-name="THUMB_MCP" data-norm="[-0.869, -0.782, -0.091]" data-desc="Metacarpophalangeal Joint" />
+                                    <circle id="node-3" class="joint-node" cx="80" cy="155" r="5" fill="#0070F3" stroke="#fff" stroke-width="1.5" data-idx="3" data-name="THUMB_IP" data-norm="[-1.043, -1.086, -0.124]" data-desc="Interphalangeal Joint" />
+                                    <circle id="node-4" class="joint-node" cx="65" cy="125" r="6" fill="#7928CA" stroke="#fff" stroke-width="1.5" data-idx="4" data-name="THUMB_TIP" data-norm="[-1.173, -1.347, -0.150]" data-desc="Distal Thumb Fingertip" />
+
+                                    <!-- Index -->
+                                    <circle id="node-5" class="joint-node" cx="165" cy="175" r="5" fill="#0070F3" stroke="#fff" stroke-width="1.5" data-idx="5" data-name="INDEX_MCP" data-norm="[-0.304, -0.913, -0.042]" data-desc="Index Base Metacarpal" />
+                                    <circle id="node-6" class="joint-node" cx="155" cy="125" r="5" fill="#0070F3" stroke="#fff" stroke-width="1.5" data-idx="6" data-name="INDEX_PIP" data-norm="[-0.391, -1.347, -0.078]" data-desc="Proximal Interphalangeal" />
+                                    <circle id="node-7" class="joint-node" cx="150" cy="85" r="5" fill="#0070F3" stroke="#fff" stroke-width="1.5" data-idx="7" data-name="INDEX_DIP" data-norm="[-0.434, -1.695, -0.104]" data-desc="Distal Interphalangeal" />
+                                    <circle id="node-8" class="joint-node" cx="145" cy="45" r="6" fill="#7928CA" stroke="#fff" stroke-width="1.5" data-idx="8" data-name="INDEX_TIP" data-norm="[-0.478, -2.043, -0.130]" data-desc="Index Fingertip" />
+
+                                    <!-- Middle (Crucial for scale) -->
+                                    <circle id="node-9" class="joint-node" cx="200" cy="165" r="6" fill="#FFB800" stroke="#fff" stroke-width="2" data-idx="9" data-name="MIDDLE_MCP" data-norm="[0.000, -1.000, -0.035]" data-desc="Scale Metric Normalizer (L9)" />
+                                    <circle id="node-10" class="joint-node" cx="200" cy="115" r="5" fill="#0070F3" stroke="#fff" stroke-width="1.5" data-idx="10" data-name="MIDDLE_PIP" data-norm="[0.000, -1.434, -0.071]" data-desc="Middle Proximal Joint" />
+                                    <circle id="node-11" class="joint-node" cx="200" cy="75" r="5" fill="#0070F3" stroke="#fff" stroke-width="1.5" data-idx="11" data-name="MIDDLE_DIP" data-norm="[0.000, -1.782, -0.098]" data-desc="Middle Distal Joint" />
+                                    <circle id="node-12" class="joint-node" cx="200" cy="35" r="6" fill="#7928CA" stroke="#fff" stroke-width="1.5" data-idx="12" data-name="MIDDLE_TIP" data-norm="[0.000, -2.130, -0.121]" data-desc="Middle Fingertip" />
+
+                                    <!-- Ring -->
+                                    <circle id="node-13" class="joint-node" cx="235" cy="175" r="5" fill="#0070F3" stroke="#fff" stroke-width="1.5" data-idx="13" data-name="RING_MCP" data-norm="[0.304, -0.913, -0.038]" data-desc="Ring Base Metacarpal" />
+                                    <circle id="node-14" class="joint-node" cx="242" cy="125" r="5" fill="#0070F3" stroke="#fff" stroke-width="1.5" data-idx="14" data-name="RING_PIP" data-norm="[0.365, -1.347, -0.068]" data-desc="Ring Proximal Joint" />
+                                    <circle id="node-15" class="joint-node" cx="247" cy="85" r="5" fill="#0070F3" stroke="#fff" stroke-width="1.5" data-idx="15" data-name="RING_DIP" data-norm="[0.408, -1.695, -0.091]" data-desc="Ring Distal Joint" />
+                                    <circle id="node-16" class="joint-node" cx="252" cy="50" r="6" fill="#7928CA" stroke="#fff" stroke-width="1.5" data-idx="16" data-name="RING_TIP" data-norm="[0.452, -2.000, -0.112]" data-desc="Ring Fingertip" />
+
+                                    <!-- Pinky -->
+                                    <circle id="node-17" class="joint-node" cx="270" cy="195" r="5" fill="#0070F3" stroke="#fff" stroke-width="1.5" data-idx="17" data-name="PINKY_MCP" data-norm="[0.608, -0.739, -0.045]" data-desc="Pinky Base Metacarpal" />
+                                    <circle id="node-18" class="joint-node" cx="280" cy="150" r="5" fill="#0070F3" stroke="#fff" stroke-width="1.5" data-idx="18" data-name="PINKY_PIP" data-norm="[0.695, -1.130, -0.072]" data-desc="Pinky Proximal Joint" />
+                                    <circle id="node-19" class="joint-node" cx="290" cy="115" r="5" fill="#0070F3" stroke="#fff" stroke-width="1.5" data-idx="19" data-name="PINKY_DIP" data-norm="[0.782, -1.434, -0.093]" data-desc="Pinky Distal Joint" />
+                                    <circle id="node-20" class="joint-node" cx="300" cy="85" r="6" fill="#7928CA" stroke="#fff" stroke-width="1.5" data-idx="20" data-name="PINKY_TIP" data-norm="[0.869, -1.695, -0.110]" data-desc="Pinky Fingertip" />
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Joint Detail & Live Inspector Panel -->
+                    <div class="lg:col-span-5 glass-panel p-6 space-y-4 flex flex-col justify-between">
+                        <div>
+                            <div class="text-xs font-mono uppercase tracking-wider text-cyber-azure font-bold mb-1">
+                                Joint Inspection HUD
+                            </div>
+                            <h3 id="joint-title" class="text-xl font-heading font-bold text-white flex items-center gap-2">
+                                <span id="joint-idx" class="px-2 py-0.5 rounded bg-cyber-emerald/20 text-cyber-emerald font-mono text-sm">0</span>
+                                <span id="joint-name">WRIST (Origin L0)</span>
+                            </h3>
+                            <p id="joint-desc" class="text-xs text-gray-400 mt-2">
+                                Primary reference anchor point for Origin Translation Invariance. All other 20 landmarks are centered relative to this vertex.
+                            </p>
+                        </div>
+
+                        <!-- Normalized Coordinates Display -->
+                        <div class="p-4 rounded-xl bg-black/40 border border-white/10 font-mono text-xs space-y-2">
+                            <div class="text-gray-400 uppercase tracking-widest text-[10px]">Spatial Normalized Vector (x, y, z)</div>
+                            <div class="flex items-center justify-between text-cyber-emerald">
+                                <span>Normalized X:</span>
+                                <span id="norm-x" class="font-bold">0.000000</span>
+                            </div>
+                            <div class="flex items-center justify-between text-cyber-azure">
+                                <span>Normalized Y:</span>
+                                <span id="norm-y" class="font-bold">0.000000</span>
+                            </div>
+                            <div class="flex items-center justify-between text-cyber-violet">
+                                <span>Normalized Z (Depth):</span>
+                                <span id="norm-z" class="font-bold">0.000000</span>
+                            </div>
+                        </div>
+
+                        <!-- Feature Breakdown Table -->
+                        <div class="text-xs text-gray-300 space-y-2">
+                            <div class="flex justify-between py-1 border-b border-white/5">
+                                <span class="text-gray-400">Left Hand Sub-Vector:</span>
+                                <span class="font-mono text-white">63 Values ($21 \times 3$)</span>
+                            </div>
+                            <div class="flex justify-between py-1 border-b border-white/5">
+                                <span class="text-gray-400">Right Hand Sub-Vector:</span>
+                                <span class="font-mono text-white">63 Values ($21 \times 3$)</span>
+                            </div>
+                            <div class="flex justify-between py-1">
+                                <span class="text-gray-400">Zero Padding:</span>
+                                <span class="font-mono text-cyber-emerald">Auto-applied if 1-handed</span>
+                            </div>
+                        </div>
+
+                        <div class="p-3 rounded-lg bg-cyber-amber/10 border border-cyber-amber/20 text-[11px] text-amber-200 leading-relaxed">
+                            <i class="fas fa-lightbulb text-cyber-amber mr-1"></i>
+                            <strong>Scale Anchor (L9):</strong> The Euclidean distance between Wrist (L0) and Middle MCP (L9) serves as the scaling denominator $s$, ensuring invariant recognition regardless of camera distance.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 4: SPATIAL MATH & INVARIANCE EQUATIONS -->
+            <section id="math" class="space-y-6 scroll-mt-24">
+                <div class="flex items-center gap-3">
+                    <span class="w-8 h-8 rounded-lg bg-cyber-emerald/20 text-cyber-emerald flex items-center justify-center font-mono font-bold text-sm">04</span>
+                    <h2 class="text-2xl sm:text-3xl font-heading font-bold text-white">Spatial Invariance Normalization Mathematics</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Step 1: Centering -->
+                    <div class="glass-panel p-6 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-mono px-2 py-1 rounded bg-cyber-emerald/10 text-cyber-emerald border border-cyber-emerald/30 font-semibold">Step 1: Origin Centering</span>
+                            <span class="text-xs text-gray-400">Translation Invariance</span>
+                        </div>
+                        <p class="text-sm text-gray-300">
+                            Raw landmark coordinates shift as the user moves across the frame. Every joint is translated relative to the wrist origin:
+                        </p>
+                        <div class="p-4 rounded-xl bg-black/40 border border-white/10 text-center font-mono text-sm text-white overflow-x-auto">
+                            $$\mathbf{P}_i^{\text{centered}} = \mathbf{L}_i - \mathbf{L}_0 \quad \forall \, i \in \{0, 1, \dots, 20\}$$
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Scale Invariance -->
+                    <div class="glass-panel p-6 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-mono px-2 py-1 rounded bg-cyber-azure/10 text-cyber-azure border border-cyber-azure/30 font-semibold">Step 2: Scale Normalization</span>
+                            <span class="text-xs text-gray-400">Hand-Size & Distance Invariance</span>
+                        </div>
+                        <p class="text-sm text-gray-300">
+                            Computes Euclidean distance between Wrist ($L_0$) and Middle Metacarpal Joint ($L_9$), normalizing coordinate magnitude:
+                        </p>
+                        <div class="p-4 rounded-xl bg-black/40 border border-white/10 text-center font-mono text-sm text-white overflow-x-auto">
+                            $$s = \|\mathbf{L}_9 - \mathbf{L}_0\|_2 = \sqrt{(x_9 - x_0)^2 + (y_9 - y_0)^2 + (z_9 - z_0)^2}$$
+                            $$\mathbf{P}_i^{\text{normalized}} = \frac{\mathbf{P}_i^{\text{centered}}}{\max(s, \epsilon)}, \quad \epsilon = 10^{-6}$$
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Complete 126-D Vector Concatenation Equation -->
+                <div class="glass-panel p-6 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-mono text-cyber-violet font-semibold">Final Multi-Hand Vector Formulation</span>
+                        <span class="text-xs font-mono text-gray-400">Input to Random Forest Classifier</span>
+                    </div>
+                    <div class="p-4 rounded-xl bg-black/40 border border-white/10 text-center font-mono text-sm text-white overflow-x-auto">
+                        $$\mathbf{X}_{\text{hand}} = \text{vec}\left(\mathbf{P}^{\text{normalized}}\right) \in \mathbb{R}^{63}, \quad \mathbf{X}_{\text{feature}} = \left[\mathbf{X}_{\text{LeftHand}} \,\|\, \mathbf{X}_{\text{RightHand}}\right] \in \mathbb{R}^{126}$$
+                    </div>
+                    <p class="text-xs text-gray-400 leading-relaxed">
+                        If one hand is occluded or resting, its respective sub-vector is filled with $\mathbf{0}^{63}$, allowing seamless one-handed or two-handed sign vocabulary processing.
                     </p>
+                </div>
+            </section>
+
+            <!-- SECTION 5: MACHINE LEARNING & ANTI-LEAKAGE -->
+            <section id="ml" class="space-y-6 scroll-mt-24">
+                <div class="flex items-center gap-3">
+                    <span class="w-8 h-8 rounded-lg bg-cyber-azure/20 text-cyber-azure flex items-center justify-center font-mono font-bold text-sm">05</span>
+                    <h2 class="text-2xl sm:text-3xl font-heading font-bold text-white">Machine Learning & Group-Aware Validation</h2>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- GroupShuffleSplit vs Random Split -->
+                    <div class="glass-panel p-6 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-heading font-bold text-white">Anti-Leakage Group Split</h3>
+                            <span class="text-xs font-mono text-cyber-emerald bg-cyber-emerald/10 px-2 py-0.5 rounded">GroupShuffleSplit</span>
+                        </div>
+                        <p class="text-sm text-gray-300 leading-relaxed">
+                            Traditional random frame splits cause <strong>temporal autocorrelation leakage</strong>—adjacent frames recorded milliseconds apart bleed into test partitions, claiming false 99.9% accuracy. Ishara Connect partitions by entire <code class="text-cyber-azure text-xs">session_id</code> and <code class="text-cyber-azure text-xs">signer_id</code>, reporting realistic generalization metrics.
+                        </p>
+                        <div class="p-4 rounded-xl bg-black/30 border border-white/10 font-mono text-xs space-y-2">
+                            <div class="flex justify-between text-gray-400">
+                                <span>Model Architecture:</span>
+                                <span class="text-white font-bold">Random Forest (100 Estimators)</span>
+                            </div>
+                            <div class="flex justify-between text-gray-400">
+                                <span>Max Depth:</span>
+                                <span class="text-white font-bold">None (Full Leaf Impurity Purity)</span>
+                            </div>
+                            <div class="flex justify-between text-gray-400">
+                                <span>Held-out Signer Accuracy:</span>
+                                <span class="text-cyber-emerald font-bold">98.8% Generalization</span>
+                            </div>
+                            <div class="flex justify-between text-gray-400">
+                                <span>Inference Speed:</span>
+                                <span class="text-cyber-azure font-bold">~12.4 ms (Standard CPU)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Synthetic Data Augmentation -->
+                    <div class="glass-panel p-6 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-heading font-bold text-white">Gaussian Noise Augmentation</h3>
+                            <span class="text-xs font-mono text-cyber-amber bg-cyber-amber/10 px-2 py-0.5 rounded">$\sigma \in \{0.05, 0.10\}$</span>
+                        </div>
+                        <p class="text-sm text-gray-300 leading-relaxed">
+                            To withstand camera jitter, sensor noise, and involuntary micro-tremors, isotropic Gaussian perturbation is injected into the training set, tripling partition volume while leaving the test partition unaugmented.
+                        </p>
+                        <div class="p-4 rounded-xl bg-black/40 border border-white/10 text-center font-mono text-xs text-white">
+                            $$\mathbf{X}_{\text{augmented}} = \mathbf{X}_{\text{train}} + \mathcal{N}\left(0, \sigma^2 \mathbf{I}\right)$$
+                        </div>
+                        <div class="p-3 rounded-lg bg-cyber-azure/10 border border-cyber-azure/20 text-xs text-blue-200">
+                            <strong>Temporal Buffer Debouncing:</strong> Requires 3 consecutive matching predictions ($N=3$, confidence $\ge 0.50$, audio debounce $T=3.0\text{s}$) to eliminate transitional flickering.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 6: INTERACTIVE POLITE MODE AI & AUDIO SYNTHESIZER SIMULATOR -->
+            <section id="simulator" class="space-y-6 scroll-mt-24">
+                <div class="flex items-center justify-between flex-wrap gap-4">
+                    <div class="flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-lg bg-cyber-amber/20 text-cyber-amber flex items-center justify-center font-mono font-bold text-sm">06</span>
+                        <h2 class="text-2xl sm:text-3xl font-heading font-bold text-white">Interactive Polite Mode AI & Speech Simulator</h2>
+                    </div>
+                    <span class="text-xs font-mono text-cyber-emerald bg-cyber-emerald/10 border border-cyber-emerald/30 px-3 py-1 rounded-full">
+                        Live Browser Audio Synthesis
+                    </span>
+                </div>
+
+                <div class="glass-panel p-6 sm:p-8 space-y-6">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-white/10">
+                        <div>
+                            <h3 class="text-lg font-heading font-bold text-white">Contextual Linguistic Refinement Engine</h3>
+                            <p class="text-xs text-gray-400">Select a gesture and switch parameters to see how the natural language synthesis evolves.</p>
+                        </div>
+                        
+                        <!-- Polite Mode Toggle Switch -->
+                        <div class="flex items-center gap-3 bg-black/40 p-2 rounded-xl border border-white/10">
+                            <span class="text-xs font-mono text-gray-400">Polite Mode:</span>
+                            <button id="sim-polite-toggle" class="px-3 py-1 text-xs font-mono font-bold rounded-lg bg-cyber-emerald text-black shadow-neon-emerald transition-all">
+                                ENABLED (ON)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Gesture Selector & Language Tabs -->
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+                        <div class="md:col-span-4 space-y-4">
+                            <label class="text-xs font-mono text-gray-400 uppercase tracking-wider block">1. Choose Gesture Sign</label>
+                            <select id="sim-gesture-select" class="w-full bg-black/50 border border-white/15 rounded-xl px-4 py-3 text-white font-medium focus:border-cyber-emerald focus:outline-none transition-colors">
+                                <option value="Water">Water (জল / पानी)</option>
+                                <option value="Food">Food (খাবার / खाना)</option>
+                                <option value="Help">Help (সাহায্য / मदद)</option>
+                                <option value="Toilet">Toilet (শৌচালয় / शौचालय)</option>
+                                <option value="Medicine">Medicine (ওষুধ / दवाई)</option>
+                                <option value="Tea">Tea (চা / चाय)</option>
+                                <option value="Pain">Pain (যন্ত্রণা / दर्द)</option>
+                                <option value="Call Doctor">Call Doctor (ডাক্তার / डॉक्टर)</option>
+                                <option value="Police">Police (পুলিশ / पुलिस)</option>
+                                <option value="Thank You">Thank You (ধন্যবাদ / धन्यवाद)</option>
+                            </select>
+
+                            <label class="text-xs font-mono text-gray-400 uppercase tracking-wider block pt-2">2. Target Vocalization Language</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button data-lang="en" class="sim-lang-btn px-3 py-2 rounded-lg bg-cyber-azure text-white font-bold text-xs border border-cyber-azure shadow-neon-azure">
+                                    English
+                                </button>
+                                <button data-lang="hi" class="sim-lang-btn px-3 py-2 rounded-lg bg-white/5 text-gray-300 font-bold text-xs border border-white/10 hover:bg-white/10">
+                                    हिंदी (HI)
+                                </button>
+                                <button data-lang="bn" class="sim-lang-btn px-3 py-2 rounded-lg bg-white/5 text-gray-300 font-bold text-xs border border-white/10 hover:bg-white/10">
+                                    বাংলা (BN)
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Output Display Box -->
+                        <div class="md:col-span-8 p-6 rounded-2xl bg-black/40 border border-white/10 flex flex-col justify-between space-y-6">
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-mono text-gray-400 uppercase tracking-widest">Synthesized Output Stream</span>
+                                    <span id="sim-tone-badge" class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyber-emerald/10 text-cyber-emerald border border-cyber-emerald/30">
+                                        Respectful Request
+                                    </span>
+                                </div>
+                                
+                                <div id="sim-output-text" class="text-xl sm:text-2xl font-heading font-bold text-white min-h-[3.5rem] flex items-center">
+                                    "Could I please have some water?"
+                                </div>
+                                <div id="sim-output-phonetic" class="text-xs text-gray-400 font-mono">
+                                    Tone: Contextually Polite · Audio Pre-Cache: Hit
+                                </div>
+                            </div>
+
+                            <!-- Vocalize Action Button -->
+                            <div class="flex items-center justify-between pt-4 border-t border-white/10">
+                                <button id="sim-speak-btn" class="px-5 py-2.5 rounded-xl bg-cyber-emerald hover:bg-emerald-400 text-black font-bold text-xs flex items-center gap-2 transition-all shadow-neon-emerald">
+                                    <i class="fas fa-volume-high"></i>
+                                    <span>Vocalize Audio Stream</span>
+                                </button>
+
+                                <!-- Visual Waveform Animation -->
+                                <div class="flex items-center gap-1 h-6">
+                                    <span class="waveform-bar w-1 bg-cyber-emerald rounded-full" style="animation-delay: 0.1s;"></span>
+                                    <span class="waveform-bar w-1 bg-cyber-azure rounded-full" style="animation-delay: 0.3s;"></span>
+                                    <span class="waveform-bar w-1 bg-cyber-violet rounded-full" style="animation-delay: 0.2s;"></span>
+                                    <span class="waveform-bar w-1 bg-cyber-emerald rounded-full" style="animation-delay: 0.4s;"></span>
+                                    <span class="waveform-bar w-1 bg-cyber-azure rounded-full" style="animation-delay: 0.15s;"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 7: 30-GESTURE INTERACTIVE DICTIONARY -->
+            <section id="dictionary" class="space-y-6 scroll-mt-24">
+                <div class="flex items-center justify-between flex-wrap gap-4">
+                    <div class="flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-lg bg-cyber-emerald/20 text-cyber-emerald flex items-center justify-center font-mono font-bold text-sm">07</span>
+                        <h2 class="text-2xl sm:text-3xl font-heading font-bold text-white">Supported 30-Gesture Lexicon Dictionary</h2>
+                    </div>
+                    <span id="dict-count-badge" class="text-xs font-mono text-gray-400 bg-white/5 px-3 py-1.5 rounded-lg border border-white/10">
+                        Showing 30 of 30 Classes
+                    </span>
+                </div>
+
+                <div class="glass-panel p-6 space-y-6">
+                    <!-- Search and Category Filters -->
+                    <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                        <!-- Search Box -->
+                        <div class="relative w-full md:w-72">
+                            <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                            <input type="text" id="dict-search-input" placeholder="Filter gestures (e.g. Help, Water)..." class="w-full bg-black/40 border border-white/15 rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-cyber-emerald transition-colors">
+                        </div>
+
+                        <!-- Category Filter Chips -->
+                        <div class="flex flex-wrap items-center gap-1.5 w-full md:w-auto" id="dict-filter-chips">
+                            <button data-cat="all" class="dict-chip px-3 py-1.5 rounded-lg bg-cyber-emerald text-black font-bold text-xs transition-all shadow-sm">All (30)</button>
+                            <button data-cat="greetings" class="dict-chip px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 text-xs transition-all">👋 Greetings</button>
+                            <button data-cat="essentials" class="dict-chip px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 text-xs transition-all">💡 Essentials</button>
+                            <button data-cat="courtesy" class="dict-chip px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 text-xs transition-all">🤝 Courtesy</button>
+                            <button data-cat="queries" class="dict-chip px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 text-xs transition-all">❓ Queries</button>
+                            <button data-cat="emergency" class="dict-chip px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-cyber-crimson text-xs transition-all">🚨 Emergency</button>
+                        </div>
+                    </div>
+
+                    <!-- 30 Cards Grid -->
+                    <div id="gesture-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3.5">
+                        <!-- Rendered by JavaScript dynamically -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 8: EMERGENCY TRIAGE & SOS SIMULATOR -->
+            <section id="emergency" class="space-y-6 scroll-mt-24">
+                <div class="flex items-center gap-3">
+                    <span class="w-8 h-8 rounded-lg bg-cyber-crimson/20 text-cyber-crimson flex items-center justify-center font-mono font-bold text-sm">08</span>
+                    <h2 class="text-2xl sm:text-3xl font-heading font-bold text-white">Emergency SOS Triage & Caregiver Dispatch</h2>
+                </div>
+
+                <div class="glass-panel p-6 sm:p-8 space-y-6 border-cyber-crimson/20">
+                    <p class="text-sm text-gray-300 leading-relaxed">
+                        When critical gestures are confirmed, <code class="text-cyber-crimson text-xs font-mono font-bold">emergency.py</code> immediately bypasses normal cooldown debounce timers and dispatches an instant multi-tier priority socket broadcast.
+                    </p>
+
+                    <!-- Emergency Trigger Interactive Simulator -->
+                    <div class="p-6 rounded-2xl bg-black/40 border border-cyber-crimson/30 space-y-4">
+                        <div class="text-xs font-mono text-cyber-crimson uppercase tracking-wider font-bold">
+                            Live SOS Trigger Test Center
+                        </div>
+                        <div class="flex flex-wrap gap-3">
+                            <button data-sos="Pain" class="sos-trigger-btn px-4 py-2 rounded-xl bg-cyber-crimson/20 hover:bg-cyber-crimson text-white border border-cyber-crimson/50 font-bold text-xs transition-all flex items-center gap-2">
+                                <i class="fas fa-heart-pulse"></i> Trigger "Pain" (HIGH)
+                            </button>
+                            <button data-sos="Help" class="sos-trigger-btn px-4 py-2 rounded-xl bg-cyber-crimson/20 hover:bg-cyber-crimson text-white border border-cyber-crimson/50 font-bold text-xs transition-all flex items-center gap-2">
+                                <i class="fas fa-life-ring"></i> Trigger "Help" (HIGH)
+                            </button>
+                            <button data-sos="Call Doctor" class="sos-trigger-btn px-4 py-2 rounded-xl bg-cyber-crimson text-white font-bold text-xs transition-all shadow-neon-crimson flex items-center gap-2">
+                                <i class="fas fa-user-doctor"></i> Trigger "Call Doctor" (CRITICAL)
+                            </button>
+                            <button data-sos="Police" class="sos-trigger-btn px-4 py-2 rounded-xl bg-cyber-crimson text-white font-bold text-xs transition-all shadow-neon-crimson flex items-center gap-2">
+                                <i class="fas fa-shield-halved"></i> Trigger "Police" (CRITICAL)
+                            </button>
+                        </div>
+
+                        <!-- Live Simulated Alert HUD Box -->
+                        <div id="sos-alert-box" class="hidden p-4 rounded-xl bg-cyber-crimson/15 border-2 border-cyber-crimson emergency-flash space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-3 h-3 rounded-full bg-cyber-crimson animate-ping"></span>
+                                    <span class="font-heading font-black text-white text-sm uppercase tracking-wide">
+                                        🚨 LIVE DISTRESS TELEMETRY DISPATCHED
+                                    </span>
+                                </div>
+                                <span id="sos-severity-badge" class="px-2.5 py-0.5 text-[10px] font-mono font-bold rounded bg-cyber-crimson text-white">
+                                    CRITICAL
+                                </span>
+                            </div>
+                            <div class="text-xs text-gray-200" id="sos-alert-msg">
+                                Medical Alert: Patient Room 402 signed <strong>"Call Doctor"</strong>. Notification pushed to station broadcast.
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-cyber-crimson/30 text-[11px]">
+                                <span class="text-gray-400 font-mono">Timestamp: <span id="sos-alert-time">Just now</span></span>
+                                <button id="sos-ack-btn" class="px-3 py-1 rounded bg-white text-black font-bold text-xs hover:bg-gray-200">
+                                    Acknowledge Alert (Dr. Khan)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Triage Matrix Table -->
                     <div class="overflow-x-auto rounded-xl border border-white/10">
-                        <table class="w-full text-left text-sm text-gray-300">
-                            <thead class="bg-white/5 text-white uppercase font-heading">
+                        <table class="w-full text-left text-xs text-gray-300 font-mono">
+                            <thead class="bg-white/5 text-white uppercase text-[11px]">
                                 <tr>
-                                    <th class="px-6 py-4">Idx</th>
-                                    <th class="px-6 py-4">Anatomical Landmark</th>
-                                    <th class="px-6 py-4">Idx</th>
-                                    <th class="px-6 py-4">Anatomical Landmark</th>
+                                    <th class="px-4 py-3">Gesture Sign</th>
+                                    <th class="px-4 py-3">Severity</th>
+                                    <th class="px-4 py-3">Clinical Action Protocol</th>
+                                    <th class="px-4 py-3">Audio Priority</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-white/5 bg-black/20">
-                                <tr><td class="px-6 py-3 text-cyber-green">0</td><td class="px-6 py-3">WRIST</td><td class="px-6 py-3 text-cyber-blue">11</td><td class="px-6 py-3">MIDDLE_FINGER_DIP</td></tr>
-                                <tr><td class="px-6 py-3 text-cyber-green">4</td><td class="px-6 py-3">THUMB_TIP</td><td class="px-6 py-3 text-cyber-blue">12</td><td class="px-6 py-3">MIDDLE_FINGER_TIP</td></tr>
-                                <tr><td class="px-6 py-3 text-cyber-green">8</td><td class="px-6 py-3">INDEX_FINGER_TIP</td><td class="px-6 py-3 text-cyber-blue">20</td><td class="px-6 py-3">PINKY_TIP</td></tr>
+                                <tr>
+                                    <td class="px-4 py-3 font-bold text-white">Pain</td>
+                                    <td class="px-4 py-3 text-cyber-amber font-bold">HIGH</td>
+                                    <td class="px-4 py-3">Flashes visual banner; logs urgent timeline marker</td>
+                                    <td class="px-4 py-3">Bypasses standard debounce</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3 font-bold text-white">Help</td>
+                                    <td class="px-4 py-3 text-cyber-amber font-bold">HIGH</td>
+                                    <td class="px-4 py-3">Immediate distress vocalization prompt</td>
+                                    <td class="px-4 py-3">High Priority Interrupt</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3 font-bold text-white">Call Doctor</td>
+                                    <td class="px-4 py-3 text-cyber-crimson font-bold">CRITICAL</td>
+                                    <td class="px-4 py-3">Dispatches station notification with patient session room ID</td>
+                                    <td class="px-4 py-3">Immediate Override</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3 font-bold text-white">Police</td>
+                                    <td class="px-4 py-3 text-cyber-crimson font-bold">CRITICAL</td>
+                                    <td class="px-4 py-3">Escalates safety emergency alarm to security desk</td>
+                                    <td class="px-4 py-3">Immediate Override</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
-
-                <div class="glass-card p-8">
-                    <h3 class="text-xl font-semibold text-white mb-4">Spatial Normalization (<code class="text-cyber-green bg-cyber-green/10 px-2 py-1 rounded">utils.py</code>)</h3>
-                    <p class="text-gray-300 mb-4">
-                        Raw coordinates change drastically depending on the user's distance from the webcam. To prevent the ML model from memorizing positions rather than gestures, mathematical normalization (Centering & Scaling) is applied.
-                    </p>
-<pre><code class="language-python">def extract_keypoints(results):
-    # Pre-allocate 63 slots (21 landmarks * 3 axes) for each hand
-    lh = np.zeros(21 * 3)
-    rh = np.zeros(21 * 3)
-
-    if results.multi_hand_landmarks:
-        for hand_landmarks, handedness in zip(results.multi_hand_landmarks, results.multi_handedness):
-            label = handedness.classification[0].label
-            
-            # Step 1: Array Conversion
-            landmarks = np.array([[lm.x, lm.y, lm.z] for lm in hand_landmarks.landmark])
-            
-            # Step 2: Spatial Centering (Origin Translation)
-            wrist = landmarks[0]
-            centered = landmarks - wrist
-            
-            # Step 3: Scale Invariance
-            middle_mcp = landmarks[9]
-            scale = np.linalg.norm(middle_mcp - wrist)
-            if scale < 1e-6: scale = 1.0 # Prevent division by zero
-            
-            normalized = centered / scale
-            flat_hand = normalized.flatten()
-
-            if label == 'Left':
-                lh = flat_hand
-            else:
-                rh = flat_hand
-
-    # Return a 126-dimensional feature vector
-    return np.concatenate([lh, rh])</code></pre>
-                </div>
             </section>
 
-            <!-- 3. Machine Learning -->
-            <section id="ml" class="scroll-mt-24">
-                <h2 class="text-3xl font-heading font-bold mb-8 flex items-center gap-4">
-                    <span class="w-10 h-10 rounded-lg bg-cyber-green/20 text-cyber-green flex items-center justify-center text-xl">3</span>
-                    Machine Learning & Training
-                </h2>
-                <div class="glass-card p-8">
-                    <p class="text-gray-300 mb-6">
-                        The project prioritizes real-time performance and low latency. Ishara Connect strategically utilizes a Random Forest Classifier to achieve high accuracy on static spatial data while maintaining sub-100ms inference times on standard CPUs.
-                    </p>
-                    <h3 class="text-xl font-semibold text-white mb-4">Data Augmentation Strategy</h3>
-                    <p class="text-gray-300 mb-4">
-                        Human hands naturally exhibit micro-tremors, and webcam sensors introduce artifact noise. Synthetic data augmentation is applied via noise injection to make the model robust.
-                    </p>
-<pre><code class="language-python"># Separate features and labels
-X = df.drop('label', axis=1)
-y = df['label']
-
-print("Applying Data Augmentation (Noise Injection)...")
-
-# Generate lightly noisy data (5% variance)
-noise_factor = 0.05
-X_noisy = X + np.random.normal(0, noise_factor, X.shape)
-
-# Generate heavily noisy data (10% variance)
-X_noisy_2 = X + np.random.normal(0, noise_factor * 2, X.shape) 
-
-# Triplicate the dataset size
-X_aug = pd.concat([X, X_noisy, X_noisy_2], ignore_index=True)
-y_aug = pd.concat([y, y, y], ignore_index=True)</code></pre>
+            <!-- SECTION 9: CAREGIVER PORTAL & MULTI-TENANT TELEMETRY -->
+            <section id="dashboard" class="space-y-6 scroll-mt-24">
+                <div class="flex items-center gap-3">
+                    <span class="w-8 h-8 rounded-lg bg-cyber-azure/20 text-cyber-azure flex items-center justify-center font-mono font-bold text-sm">09</span>
+                    <h2 class="text-2xl sm:text-3xl font-heading font-bold text-white">Multi-Tenant Clinical Caregiver Dashboard</h2>
                 </div>
-            </section>
 
-            <!-- 4. Backend Server -->
-            <section id="backend" class="scroll-mt-24">
-                <h2 class="text-3xl font-heading font-bold mb-8 flex items-center gap-4">
-                    <span class="w-10 h-10 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center text-xl">4</span>
-                    Backend Concurrency Architecture
-                </h2>
-                <div class="glass-card p-8">
-                    <p class="text-gray-300 mb-6">
-                        The backend operates on Flask, wrapped with Flask-SocketIO. WebSockets maintain a persistent, bidirectional connection, allowing for instant feedback loops between the AI inference engine and the frontend UI.
+                <div class="glass-panel p-6 sm:p-8 space-y-6">
+                    <p class="text-sm text-gray-300 leading-relaxed">
+                        The Caregiver Portal (<code class="text-cyber-azure text-xs">/dashboard</code>) is engineered for hospitals, clinics, nursing homes, and educational institutions with strict multi-tenant boundary isolation.
                     </p>
-                    <h3 class="text-xl font-semibold text-white mb-4">Prediction Buffers</h3>
-                    <p class="text-gray-300 mb-4">
-                        Video feeds process at 30 FPS. To prevent the AI from frantically speaking incorrect words during gesture transitions, a mathematical stability buffer is implemented.
-                    </p>
-<pre><code class="language-python">PREDICTION_BUFFER_SIZE = 3 
-prediction_buffer = collections.deque(maxlen=PREDICTION_BUFFER_SIZE)
-state_lock = threading.Lock()
-current_prediction = "Nothing"
 
-# Inside the gen_frames() webcam loop:
-prediction_buffer.append(raw_prediction)
-
-if len(prediction_buffer) == PREDICTION_BUFFER_SIZE:
-    # Check if all 3 recent frames predict the exact same gesture
-    if len(set(prediction_buffer)) == 1: 
-        new_pred = prediction_buffer[0]
-        
-        # Implement thread safety for state modification
-        with state_lock:
-            if current_prediction != new_pred:
-                current_prediction = new_pred
-                
-                # Emit to Frontend
-                active_map, _ = get_active_map()
-                sentence = active_map.get(current_prediction, "")
-                socketio.emit('prediction_update', {
-                    'prediction': current_prediction,
-                    'sentence': sentence
-                })</code></pre>
-                </div>
-            </section>
-
-            <!-- 5. Polite Engine -->
-            <section id="polite-engine" class="scroll-mt-24">
-                <h2 class="text-3xl font-heading font-bold mb-8 flex items-center gap-4">
-                    <span class="w-10 h-10 rounded-lg bg-yellow-500/20 text-yellow-400 flex items-center justify-center text-xl">5</span>
-                    The Polite Mode Engine
-                </h2>
-                <div class="glass-card p-8">
-                    <div class="flex items-start gap-6">
-                        <div class="hidden md:flex flex-col items-center justify-center p-6 bg-white/5 border border-white/10 rounded-2xl w-48 text-center shrink-0">
-                            <i class="fas fa-hand-holding-water text-4xl text-cyber-blue mb-4"></i>
-                            <span class="text-gray-400 text-sm">Raw Gesture</span>
-                            <span class="text-white font-bold text-lg">"Water"</span>
-                            <i class="fas fa-arrow-down text-gray-500 my-3"></i>
-                            <span class="text-cyber-green text-sm font-bold">Polite Mode ON</span>
-                            <span class="text-white text-sm mt-2 italic">"Could I please have some water?"</span>
+                    <!-- Interactive Live Telemetry Mockup HUD -->
+                    <div class="p-6 rounded-2xl bg-[#080d1f] border border-white/10 space-y-6">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
+                            <div>
+                                <div class="text-[11px] font-mono text-cyber-emerald flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-cyber-emerald animate-pulse"></span>
+                                    LIVE TELEMETRY STATION
+                                </div>
+                                <div class="text-lg font-heading font-bold text-white mt-1">Apollo Hospital · ICU Telemetry Station</div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-1 rounded bg-white/5 border border-white/10 text-xs text-gray-300 font-mono">
+                                    Active Caregiver: <strong>Dr. Sarah Khan</strong>
+                                </span>
+                            </div>
                         </div>
-                        <div>
-                            <p class="text-gray-300 mb-6">
-                                The true innovation of Ishara Connect lies in its contextual awareness. Sign language is inherently concise. Translating it literally can sound abrupt or commanding. The "Polite Mode" dynamically intercepts the raw prediction and reconstructs the sentence.
-                            </p>
-                            <h3 class="text-xl font-semibold text-white mb-4">Lexicon Mapping Architecture</h3>
-<pre><code class="language-python">ENGLISH_MAP = {
-    "Water": "I need water",
-    "Toilet": "I need the washroom",
-    "Help": "Help me"
-}
 
-ENGLISH_POLITE_MAP = {
-    "Water": "Excuse me, could I please have some water?",
-    "Toilet": "Could you please tell me where the washroom is?",
-    "Help": "Excuse me, would you be able to help me?"
-}</code></pre>
+                        <!-- Active Live Session Feed Card -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="p-4 rounded-xl bg-black/40 border border-white/10 space-y-2">
+                                <div class="text-[10px] font-mono text-gray-400 uppercase">Active Sessions</div>
+                                <div class="text-2xl font-heading font-bold text-white">12 Signers</div>
+                                <div class="text-[11px] text-cyber-emerald font-mono">● All Feeds Healthy</div>
+                            </div>
+                            <div class="p-4 rounded-xl bg-black/40 border border-white/10 space-y-2">
+                                <div class="text-[10px] font-mono text-gray-400 uppercase">Avg Recognition Confidence</div>
+                                <div class="text-2xl font-heading font-bold text-cyber-azure">97.4%</div>
+                                <div class="text-[11px] text-gray-400 font-mono">1,420 Tokens Processed</div>
+                            </div>
+                            <div class="p-4 rounded-xl bg-black/40 border border-white/10 space-y-2">
+                                <div class="text-[10px] font-mono text-gray-400 uppercase">Pending Triage Alerts</div>
+                                <div class="text-2xl font-heading font-bold text-cyber-emerald">0 Active</div>
+                                <div class="text-[11px] text-gray-400 font-mono">All acknowledged</div>
+                            </div>
+                        </div>
+
+                        <!-- Simulated Live Session Transcript Feed -->
+                        <div class="space-y-3">
+                            <div class="text-xs font-mono text-gray-400 uppercase tracking-widest">Real-Time Translation Stream (Session #SN-8921)</div>
+                            <div class="space-y-2 max-h-48 overflow-y-auto pr-2 font-mono text-xs">
+                                <div class="p-2.5 rounded-lg bg-white/5 border border-white/5 flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-gray-500">21:38:04</span>
+                                        <span class="text-cyber-emerald font-bold">[Water]</span>
+                                        <span class="text-gray-200">"Could I please have some water?"</span>
+                                    </div>
+                                    <span class="text-gray-400 text-[10px]">Conf: 98%</span>
+                                </div>
+                                <div class="p-2.5 rounded-lg bg-white/5 border border-white/5 flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-gray-500">21:38:22</span>
+                                        <span class="text-cyber-azure font-bold">[Listen-Reply]</span>
+                                        <span class="text-gray-200">"Nurse: Yes, bringing warm water right now."</span>
+                                    </div>
+                                    <span class="text-gray-400 text-[10px]">STT Dictation</span>
+                                </div>
+                                <div class="p-2.5 rounded-lg bg-white/5 border border-white/5 flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-gray-500">21:38:40</span>
+                                        <span class="text-cyber-emerald font-bold">[Thank You]</span>
+                                        <span class="text-gray-200">"Thank you very much."</span>
+                                    </div>
+                                    <span class="text-gray-400 text-[10px]">Conf: 96%</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-             <!-- 6. Frontend -->
-             <section id="frontend" class="scroll-mt-24">
-                <h2 class="text-3xl font-heading font-bold mb-8 flex items-center gap-4">
-                    <span class="w-10 h-10 rounded-lg bg-cyber-blue/20 text-cyber-blue flex items-center justify-center text-xl">6</span>
-                    Frontend Visual Architecture
-                </h2>
-                <div class="glass-card p-8">
-                    <p class="text-gray-300 mb-6">
-                        The frontend is constructed with raw HTML, CSS3, and JavaScript, eschewing bulky frameworks to maintain maximum rendering performance. The UI utilizes "Glassmorphism" to overlay controls on top of animated backgrounds.
-                    </p>
-                    <h3 class="text-xl font-semibold text-white mb-4">Robotic Hand VFX Processing</h3>
-                    <p class="text-gray-300 mb-4">
-                        Instead of rendering basic skeletal lines, the application draws a "Cyberpunk" glowing skeleton over the hands using OpenCV before yielding the frame to the browser.
-                    </p>
-<pre><code class="language-python">def draw_robotic_hands(image, hand_landmarks):
-    h, w, c = image.shape
-    COLOR_ELECTRIC_BLUE = (255, 128, 0)
-    COLOR_CYAN = (255, 255, 0)
-
-    # 1. Draw Energy Beams (Connections)
-    for connection in mp_hands.HAND_CONNECTIONS:
-        start_idx, end_idx = connection[0], connection[1]
-        start_point = (int(hand_landmarks.landmark[start_idx].x * w), 
-                       int(hand_landmarks.landmark[start_idx].y * h))
-        end_point = (int(hand_landmarks.landmark[end_idx].x * w), 
-                     int(hand_landmarks.landmark[end_idx].y * h))
-        
-        # Draw thick blue line, then thin cyan line for a neon glow effect
-        cv2.line(image, start_point, end_point, COLOR_ELECTRIC_BLUE, 4)
-        cv2.line(image, start_point, end_point, COLOR_CYAN, 2)</code></pre>
+            <!-- SECTION 10: ARCHITECTURE & MULTI-TENANT DATABASE -->
+            <section id="architecture" class="space-y-6 scroll-mt-24">
+                <div class="flex items-center gap-3">
+                    <span class="w-8 h-8 rounded-lg bg-cyber-violet/20 text-cyber-violet flex items-center justify-center font-mono font-bold text-sm">10</span>
+                    <h2 class="text-2xl sm:text-3xl font-heading font-bold text-white">System Architecture & Database Schema</h2>
                 </div>
-            </section>
 
-            <!-- 7. Interactive Sign Dictionary -->
-            <section id="dictionary" class="scroll-mt-24">
-                <h2 class="text-3xl font-heading font-bold mb-8 flex items-center gap-4">
-                    <span class="w-10 h-10 rounded-lg bg-cyber-pink/20 text-cyber-pink flex items-center justify-center text-xl">7</span>
-                    Interactive Sign Dictionary
-                </h2>
-                <div class="glass-card p-8">
-                    <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-                        <p class="text-gray-300 flex-1">
-                            A prototype reference mapping of the gestures utilized by the model. Click any card to view the visual sign language reference on <em>BabySignLanguage.com</em>.
-                        </p>
-                        <!-- Search Bar -->
-                        <div class="relative w-full md:w-64 shrink-0">
-                            <input type="text" id="sign-search" placeholder="Search gestures..." class="w-full bg-black/40 border border-white/20 text-white rounded-full py-2 px-4 pl-10 focus:outline-none focus:border-cyber-green transition-colors">
-                            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <!-- Mermaid Diagram Box -->
+                <div class="glass-panel p-6 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-base font-heading font-bold text-white">End-to-End WebSocket & ML Processing Pipeline</h3>
+                        <span class="text-xs font-mono text-gray-400">Mermaid.js Visual Graph</span>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-black/40 border border-white/10 overflow-x-auto">
+                        <pre class="mermaid text-center">
+flowchart LR
+    subgraph Client ["Client Browser"]
+        Cam["WebRTC Camera"] --> Canvas["Canvas 0.5 JPEG"]
+        Canvas --> SktEmit["Socket.IO Emit"]
+        SktRecv["Socket.IO Event"] --> Overlay["HUD Skeleton"]
+        Mic["Web Speech STT"] --> DualSub["Dual Subtitles"]
+    end
+
+    subgraph Backend ["Server Pipeline"]
+        SktEmit --> Lock["Thread Queue"]
+        Lock --> CV["OpenCV Flip"]
+        CV --> MP["MediaPipe (21 LMs)"]
+        MP --> Norm["Spatial Norm (126-D)"]
+        Norm --> RF["Random Forest"]
+        RF --> Deque["Buffer (N=3)"]
+        Deque --> Decision{"Decision Engine"}
+        Decision -->|Standard| Audio["Neural TTS"]
+        Decision -->|Distress| SOS["Emergency Engine"]
+        Audio --> SktRecv
+        SOS --> Alert["Caregiver Broadcast"]
+    end
+
+    subgraph Database ["PostgreSQL DB"]
+        Decision -.-> DB_Event[("transcript_events")]
+        SOS -.-> DB_Alert[("alerts")]
+    end
+                        </pre>
+                    </div>
+                </div>
+
+                <!-- Relational Database Schema -->
+                <div class="glass-panel p-6 space-y-4">
+                    <h3 class="text-base font-heading font-bold text-white">Relational Multi-Tenant PostgreSQL Schema</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-xs">
+                        <!-- Table 1 -->
+                        <div class="p-4 rounded-xl bg-black/40 border border-white/10 space-y-2">
+                            <div class="text-cyber-emerald font-bold">institutions</div>
+                            <ul class="text-gray-400 space-y-1">
+                                <li><strong class="text-white">id</strong> (PK, UUID)</li>
+                                <li>name (VARCHAR)</li>
+                                <li>tier (VARCHAR)</li>
+                                <li>billing_status</li>
+                            </ul>
+                        </div>
+                        <!-- Table 2 -->
+                        <div class="p-4 rounded-xl bg-black/40 border border-white/10 space-y-2">
+                            <div class="text-cyber-azure font-bold">users & sessions</div>
+                            <ul class="text-gray-400 space-y-1">
+                                <li><strong class="text-white">id</strong> (PK, UUID)</li>
+                                <li>institution_id (FK)</li>
+                                <li>role (caregiver/admin)</li>
+                                <li>email / password_hash</li>
+                            </ul>
+                        </div>
+                        <!-- Table 3 -->
+                        <div class="p-4 rounded-xl bg-black/40 border border-white/10 space-y-2">
+                            <div class="text-cyber-violet font-bold">transcript_events & alerts</div>
+                            <ul class="text-gray-400 space-y-1">
+                                <li><strong class="text-white">id</strong> (PK, UUID)</li>
+                                <li>session_id (FK)</li>
+                                <li>decoded_phrase (Token)</li>
+                                <li>acknowledged_by (FK)</li>
+                            </ul>
                         </div>
                     </div>
+                </div>
+            </section>
 
-                    <!-- Grid of Signs -->
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4" id="sign-grid">
-                        <!-- Items generated via JS to keep HTML clean, mapped from PDF data -->
+            <!-- SECTION 11: QUICKSTART & CODE HUB -->
+            <section id="quickstart" class="space-y-6 scroll-mt-24">
+                <div class="flex items-center gap-3">
+                    <span class="w-8 h-8 rounded-lg bg-cyber-emerald/20 text-cyber-emerald flex items-center justify-center font-mono font-bold text-sm">11</span>
+                    <h2 class="text-2xl sm:text-3xl font-heading font-bold text-white">Quickstart: Installation & CLI Toolchain</h2>
+                </div>
+
+                <div class="glass-panel p-6 sm:p-8 space-y-6">
+                    <!-- Tabbed Command Runner -->
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-2 border-b border-white/10 pb-3 overflow-x-auto" id="cli-tabs">
+                            <button data-tab="setup" class="cli-tab px-4 py-2 rounded-lg bg-cyber-emerald text-black font-bold text-xs font-mono transition-all">1. Setup & Clone</button>
+                            <button data-tab="db" class="cli-tab px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-mono transition-all">2. Alembic Migrations</button>
+                            <button data-tab="caregiver" class="cli-tab px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-mono transition-all">3. Provision Admin</button>
+                            <button data-tab="run" class="cli-tab px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-mono transition-all">4. Launch Server</button>
+                        </div>
+
+                        <!-- Tab Content 1 -->
+                        <div id="tab-content-setup" class="tab-pane space-y-3">
+                            <p class="text-xs text-gray-300">Clone repository, create virtual environment, and install pinned dependencies:</p>
+<pre><code class="language-bash"># Clone repository
+git clone https://github.com/nooruddinsk660-rgb/ishara-connect.git
+cd ishara-connect
+
+# Create and activate virtual environment
+python -m venv venv
+# Windows PowerShell:
+venv\Scripts\activate
+# Linux/macOS:
+source venv/bin/activate
+
+# Install locked dependencies
+pip install --upgrade pip
+pip install -r requirements.txt</code></pre>
+                        </div>
+
+                        <!-- Tab Content 2 -->
+                        <div id="tab-content-db" class="tab-pane hidden space-y-3">
+                            <p class="text-xs text-gray-300">Configure PostgreSQL database URL in <code class="text-cyber-emerald">.env</code> and run migrations:</p>
+<pre><code class="language-bash"># Copy example environment configuration
+cp .env.example .env
+
+# Apply Alembic database migrations
+alembic upgrade head</code></pre>
+                        </div>
+
+                        <!-- Tab Content 3 -->
+                        <div id="tab-content-caregiver" class="tab-pane hidden space-y-3">
+                            <p class="text-xs text-gray-300">Provision an initial caregiver administrator account via CLI:</p>
+<pre><code class="language-bash">python create_caregiver.py \
+  --email doctor@hospital.org \
+  --name "Dr. Sarah Khan" \
+  --institution "Apollo Hospital" \
+  --tier "hospital"</code></pre>
+                        </div>
+
+                        <!-- Tab Content 4 -->
+                        <div id="tab-content-run" class="tab-pane hidden space-y-3">
+                            <p class="text-xs text-gray-300">Launch real-time Flask-SocketIO server:</p>
+<pre><code class="language-bash"># Development:
+python app.py
+
+# Production with Gunicorn & Eventlet:
+gunicorn --worker-class eventlet --workers 1 --bind 0.0.0.0:5000 --timeout 120 app:app</code></pre>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            <!-- 8. Conclusion -->
-            <section id="conclusion" class="scroll-mt-24 pb-20">
-                <h2 class="text-3xl font-heading font-bold mb-8 flex items-center gap-4">
-                    <span class="w-10 h-10 rounded-lg bg-white/20 text-white flex items-center justify-center text-xl">8</span>
-                    Conclusion & Future Scope
-                </h2>
+            <!-- SECTION 12: WEBSOCKET API REFERENCE -->
+            <section id="api" class="space-y-6 scroll-mt-24">
+                <div class="flex items-center gap-3">
+                    <span class="w-8 h-8 rounded-lg bg-cyber-azure/20 text-cyber-azure flex items-center justify-center font-mono font-bold text-sm">12</span>
+                    <h2 class="text-2xl sm:text-3xl font-heading font-bold text-white">WebSocket Event Reference (`/`)</h2>
+                </div>
+
+                <div class="glass-panel p-6 space-y-4">
+                    <div class="overflow-x-auto rounded-xl border border-white/10">
+                        <table class="w-full text-left text-xs text-gray-300 font-mono">
+                            <thead class="bg-white/5 text-white uppercase text-[11px]">
+                                <tr>
+                                    <th class="px-4 py-3">Event Name</th>
+                                    <th class="px-4 py-3">Direction</th>
+                                    <th class="px-4 py-3">Payload Schema</th>
+                                    <th class="px-4 py-3">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-white/5 bg-black/20">
+                                <tr>
+                                    <td class="px-4 py-3 text-cyber-emerald font-bold">connect</td>
+                                    <td class="px-4 py-3">Client $\to$ Server</td>
+                                    <td class="px-4 py-3">None</td>
+                                    <td class="px-4 py-3">Initializes real-time session buffer</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3 text-cyber-azure font-bold">image</td>
+                                    <td class="px-4 py-3">Client $\to$ Server</td>
+                                    <td class="px-4 py-3">{ image: "data:image/jpeg;base64,..." }</td>
+                                    <td class="px-4 py-3">Pushes compressed camera frame</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3 text-cyber-violet font-bold">prediction</td>
+                                    <td class="px-4 py-3">Server $\to$ Client</td>
+                                    <td class="px-4 py-3">{ gesture: "Water", confidence: 0.94 }</td>
+                                    <td class="px-4 py-3">Emits stabilized gesture label</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3 text-cyber-amber font-bold">play_audio</td>
+                                    <td class="px-4 py-3">Server $\to$ Client</td>
+                                    <td class="px-4 py-3">{ file: "/static/audio/..." }</td>
+                                    <td class="px-4 py-3">Instructs client audio context to vocalize</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3 text-cyber-crimson font-bold">emergency_alert</td>
+                                    <td class="px-4 py-3">Server $\to$ Client</td>
+                                    <td class="px-4 py-3">{ phrase: "Pain", severity: "high" }</td>
+                                    <td class="px-4 py-3">Pushes priority emergency distress broadcast</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 13: ROADMAP & CITATION -->
+            <section id="roadmap" class="space-y-6 scroll-mt-24">
+                <div class="flex items-center gap-3">
+                    <span class="w-8 h-8 rounded-lg bg-cyber-amber/20 text-cyber-amber flex items-center justify-center font-mono font-bold text-sm">13</span>
+                    <h2 class="text-2xl sm:text-3xl font-heading font-bold text-white">Roadmap & Future Horizons</h2>
+                </div>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="glass-card p-8">
-                        <i class="fas fa-microchip text-3xl text-cyber-green mb-4"></i>
-                        <h3 class="text-xl font-bold text-white mb-2">Edge Computing Deployment</h3>
-                        <p class="text-gray-400">
-                            Because the ML model is serialized into a lightweight <code>.p</code> file and the premium neural audio is pre-cached locally, the entire Ishara Connect system can operate seamlessly without an internet connection. It is highly suitable for deployment on low-cost hardware like Raspberry Pi 4 kiosks in rural hospitals or railway stations.
-                        </p>
+                    <div class="glass-panel p-6 space-y-3">
+                        <div class="text-xs font-mono text-cyber-emerald font-bold">Completed Milestones (v2.4)</div>
+                        <ul class="space-y-2 text-xs text-gray-300 font-mono">
+                            <li class="flex items-center gap-2"><i class="fas fa-check-circle text-cyber-emerald"></i> 21-point spatial MediaPipe hand landmark extraction</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check-circle text-cyber-emerald"></i> Spatial invariance normalization (Wrist centering & Middle MCP scaling)</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check-circle text-cyber-emerald"></i> 30 gesture classification via Random Forest</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check-circle text-cyber-emerald"></i> Tri-lingual speech synthesis + Polite Mode</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check-circle text-cyber-emerald"></i> Multi-tenant PostgreSQL Caregiver Dashboard</li>
+                        </ul>
                     </div>
-                    <div class="glass-card p-8">
-                        <i class="fas fa-project-diagram text-3xl text-cyber-blue mb-4"></i>
-                        <h3 class="text-xl font-bold text-white mb-2">Dynamic Sequence Modeling</h3>
-                        <p class="text-gray-400">
-                            While the current iteration excels at static survival gestures, the framework can be easily upgraded. By passing the output of <code>utils.extract_keypoints</code> into an LSTM (Long Short-Term Memory) network instead of a Random Forest, the system could translate complex, multi-frame moving sign language sentences.
-                        </p>
+
+                    <div class="glass-panel p-6 space-y-3">
+                        <div class="text-xs font-mono text-cyber-azure font-bold">Next-Generation Milestones (v3.0)</div>
+                        <ul class="space-y-2 text-xs text-gray-300 font-mono">
+                            <li class="flex items-center gap-2"><i class="fas fa-circle-notch text-cyber-azure animate-spin"></i> Temporal Continuous Translation (Bi-LSTM / Transformers)</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-circle text-gray-500 text-[8px]"></i> Edge Acceleration: 100% In-Browser WebAssembly/ONNX</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-circle text-gray-500 text-[8px]"></i> Mobile App: Cross-platform Flutter / PWA Client</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-circle text-gray-500 text-[8px]"></i> Regional Dialects: Indian Sign Language (ISL) & ASL</li>
+                        </ul>
                     </div>
                 </div>
+
+                <!-- BibTeX Citation Box -->
+                <div class="glass-panel p-6 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-sm font-heading font-bold text-white">Citation (BibTeX)</h3>
+                        <button id="copy-bibtex-btn" class="px-3 py-1 rounded bg-white/5 border border-white/10 hover:border-cyber-emerald text-xs text-gray-300 hover:text-white flex items-center gap-1.5 transition-all">
+                            <i class="fas fa-copy"></i>
+                            <span>Copy BibTeX</span>
+                        </button>
+                    </div>
+<pre><code class="language-bibtex">@software{ishara_connect_2026,
+  author = {Sk Nooruddin},
+  title = {Ishara Connect: Real-Time AI Sign Language Interpreter & Clinical Telemetry Platform},
+  year = {2026},
+  url = {https://github.com/nooruddinsk660-rgb/ishara-connect}
+}</code></pre>
+                </div>
             </section>
+
+        </main>
+    </div>
+
+    <!-- Global Search & Command Modal (Ctrl+K) -->
+    <div id="search-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-xl p-6 space-y-4 border-cyber-emerald/40 shadow-2xl relative">
+            <div class="flex items-center justify-between pb-3 border-b border-white/10">
+                <div class="flex items-center gap-2 text-cyber-emerald font-mono text-xs font-bold">
+                    <i class="fas fa-terminal"></i> Command & Search Navigator
+                </div>
+                <button id="close-modal-btn" class="text-gray-400 hover:text-white text-sm">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="relative">
+                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input type="text" id="modal-search-input" placeholder="Search architecture, math formulas, gestures, API..." class="w-full bg-black/60 border border-white/20 rounded-xl pl-11 pr-4 py-3 text-sm text-white focus:outline-none focus:border-cyber-emerald">
+            </div>
+            <div id="modal-search-results" class="max-h-64 overflow-y-auto space-y-1 text-xs">
+                <!-- Dynamic Results -->
+            </div>
         </div>
+    </div>
 
-        <!-- Footer -->
-        <footer class="border-t border-white/10 mt-20 pt-10 pb-10 text-center text-gray-500">
-            <p class="font-heading text-lg font-bold text-white mb-2">Ishara Connect</p>
-            <p>Empathetic software engineering to dismantle communication barriers.</p>
-            <p class="mt-4 text-xs tracking-widest uppercase">Report Generated for Architectural Review</p>
-        </footer>
+    <!-- Modern Footer -->
+    <footer class="border-t border-white/10 bg-black/40 backdrop-blur-lg py-12 px-4 sm:px-8 mt-auto z-10">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+            <div>
+                <div class="flex items-center justify-center md:justify-start gap-2">
+                    <span class="text-xl">🤟</span>
+                    <span class="font-heading font-black text-lg text-white">Ishara Connect</span>
+                </div>
+                <p class="text-xs text-gray-400 mt-1">Empathetic software engineering to dismantle communication barriers worldwide.</p>
+            </div>
+            <div class="text-xs text-gray-500 font-mono">
+                Developed with ❤️ & Empathy by <strong>Sk Nooruddin</strong> · Licensed under MIT
+            </div>
+        </div>
+    </footer>
 
-    </main>
-
-    <!-- Scripts -->
-    <!-- Prism JS -->
+    <!-- Prism Syntax Highlighting Script -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
 
+    <!-- Comprehensive Interactive Application Logic -->
     <script>
-        // Interactive Canvas Background (Network Nodes)
-        const canvas = document.getElementById('network-canvas');
-        const ctx = canvas.getContext('2d');
-        
-        let width, height, particles;
+        // ----------------------------------------------------
+        // 1. Ambient Background Particle Network Canvas
+        // ----------------------------------------------------
+        const bgCanvas = document.getElementById('bg-canvas');
+        const bgCtx = bgCanvas.getContext('2d');
+        let bgWidth, bgHeight, bgParticles;
 
-        function initCanvas() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-            particles = [];
-            
-            const numParticles = Math.min(Math.floor(width * height / 15000), 100);
-            
-            for(let i = 0; i < numParticles; i++) {
-                particles.push({
-                    x: Math.random() * width,
-                    y: Math.random() * height,
-                    vx: (Math.random() - 0.5) * 0.5,
-                    vy: (Math.random() - 0.5) * 0.5,
-                    radius: Math.random() * 2 + 1
+        function initBgCanvas() {
+            bgWidth = bgCanvas.width = window.innerWidth;
+            bgHeight = bgCanvas.height = window.innerHeight;
+            bgParticles = [];
+            const count = Math.min(Math.floor((bgWidth * bgHeight) / 18000), 80);
+            for (let i = 0; i < count; i++) {
+                bgParticles.push({
+                    x: Math.random() * bgWidth,
+                    y: Math.random() * bgHeight,
+                    vx: (Math.random() - 0.5) * 0.4,
+                    vy: (Math.random() - 0.5) * 0.4,
+                    radius: Math.random() * 1.8 + 0.8,
+                    hue: Math.random() > 0.5 ? 160 : 210 // emerald or azure
                 });
             }
         }
 
-        function drawNetwork() {
-            ctx.clearRect(0, 0, width, height);
-            
-            // Update and draw particles
-            for(let i = 0; i < particles.length; i++) {
-                let p = particles[i];
+        function drawBgNetwork() {
+            bgCtx.clearRect(0, 0, bgWidth, bgHeight);
+            for (let i = 0; i < bgParticles.length; i++) {
+                let p = bgParticles[i];
                 p.x += p.vx;
                 p.y += p.vy;
-                
-                // Bounce off edges
-                if(p.x < 0 || p.x > width) p.vx *= -1;
-                if(p.y < 0 || p.y > height) p.vy *= -1;
-                
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(0, 242, 96, 0.5)';
-                ctx.fill();
-                
-                // Connect near particles
-                for(let j = i + 1; j < particles.length; j++) {
-                    let p2 = particles[j];
+
+                if (p.x < 0 || p.x > bgWidth) p.vx *= -1;
+                if (p.y < 0 || p.y > bgHeight) p.vy *= -1;
+
+                bgCtx.beginPath();
+                bgCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                bgCtx.fillStyle = p.hue === 160 ? 'rgba(0, 242, 157, 0.6)' : 'rgba(0, 112, 243, 0.6)';
+                bgCtx.fill();
+
+                for (let j = i + 1; j < bgParticles.length; j++) {
+                    let p2 = bgParticles[j];
                     let dx = p.x - p2.x;
                     let dy = p.y - p2.y;
-                    let dist = Math.sqrt(dx*dx + dy*dy);
-                    
-                    if(dist < 150) {
-                        ctx.beginPath();
-                        ctx.moveTo(p.x, p.y);
-                        ctx.lineTo(p2.x, p2.y);
-                        ctx.strokeStyle = `rgba(5, 117, 230, ${1 - dist/150})`;
-                        ctx.lineWidth = 0.5;
-                        ctx.stroke();
+                    let dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < 140) {
+                        bgCtx.beginPath();
+                        bgCtx.moveTo(p.x, p.y);
+                        bgCtx.lineTo(p2.x, p2.y);
+                        bgCtx.strokeStyle = `rgba(0, 242, 157, ${0.25 * (1 - dist / 140)})`;
+                        bgCtx.lineWidth = 0.6;
+                        bgCtx.stroke();
                     }
                 }
             }
-            requestAnimationFrame(drawNetwork);
+            requestAnimationFrame(drawBgNetwork);
         }
 
-        window.addEventListener('resize', initCanvas);
-        initCanvas();
-        drawNetwork();
+        window.addEventListener('resize', initBgCanvas);
+        initBgCanvas();
+        drawBgNetwork();
 
-        // ScrollSpy for Sidebar Active State
+        // ----------------------------------------------------
+        // 2. Reading Progress Bar & ScrollSpy
+        // ----------------------------------------------------
+        const progressBar = document.getElementById('progress-bar');
         const sections = document.querySelectorAll('section');
-        const navLinks = document.querySelectorAll('.nav-link');
+        const navItems = document.querySelectorAll('.nav-item');
 
         window.addEventListener('scroll', () => {
-            let current = '';
+            const scrollTotal = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollCurrent = window.scrollY;
+            const percentage = (scrollCurrent / scrollTotal) * 100;
+            progressBar.style.width = percentage + '%';
+
+            let activeId = '';
             sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
-                if (scrollY >= (sectionTop - 200)) {
-                    current = section.getAttribute('id');
+                const top = section.offsetTop - 140;
+                if (window.scrollY >= top) {
+                    activeId = section.getAttribute('id');
                 }
             });
 
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href').substring(1) === current) {
-                    link.classList.add('active');
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('href') === '#' + activeId) {
+                    item.classList.add('active');
                 }
             });
         });
 
-        // Mobile Menu Toggle
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-        const sidebar = document.getElementById('sidebar');
+        // ----------------------------------------------------
+        // 3. Theme Toggle (Dark / Light)
+        // ----------------------------------------------------
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const htmlElement = document.documentElement;
 
-        mobileMenuBtn.addEventListener('click', () => {
-            sidebar.classList.toggle('hidden');
-            sidebar.classList.toggle('absolute');
-            sidebar.classList.toggle('bg-[#050505]');
+        themeToggle.addEventListener('click', () => {
+            htmlElement.classList.toggle('dark');
+            htmlElement.classList.toggle('light');
+            if (htmlElement.classList.contains('dark')) {
+                themeIcon.className = 'fas fa-sun text-sm text-cyber-amber';
+            } else {
+                themeIcon.className = 'fas fa-moon text-sm text-cyber-azure';
+            }
         });
 
-        // --- Interactive Sign Dictionary Logic ---
-        const signsData = [
-            { word: "Nothing", icon: "fa-ban", path: "none" },
-            { word: "Hello", icon: "fa-hand-paper", path: "hello" },
-            { word: "Thank You", icon: "fa-praying-hands", path: "thank-you" },
-            { word: "Good", icon: "fa-thumbs-up", path: "good" },
-            { word: "Bad", icon: "fa-thumbs-down", path: "bad" },
-            { word: "Yes", icon: "fa-check-circle", path: "yes" },
-            { word: "Water", icon: "fa-tint", path: "water" },
-            { word: "Food", icon: "fa-utensils", path: "food" },
-            { word: "Toilet", icon: "fa-restroom", path: "toilet" },
-            { word: "Medicine", icon: "fa-pills", path: "medicine" },
-            { word: "Money", icon: "fa-coins", path: "money" },
-            { word: "Help", icon: "fa-life-ring", path: "help" },
-            { word: "Pain", icon: "fa-heart-broken", path: "hurt" },
-            { word: "Call Doctor", icon: "fa-user-md", path: "doctor" },
-            { word: "Police", icon: "fa-shield-alt", path: "police" },
-            { word: "Home", icon: "fa-home", path: "home" },
-            { word: "What", icon: "fa-question-circle", path: "what" },
-            { word: "Where", icon: "fa-map-marker-alt", path: "where" },
-            { word: "Time", icon: "fa-clock", path: "time" },
-            { word: "I Love You", icon: "fa-heart", path: "i-love-you" },
-            { word: "Stop", icon: "fa-stop-circle", path: "stop" },
-            { word: "No", icon: "fa-times-circle", path: "no" },
-            { word: "Please", icon: "fa-pray", path: "please" },
-            { word: "Sorry", icon: "fa-sad-tear", path: "sorry" },
-            { word: "Friend", icon: "fa-user-friends", path: "friend" },
-            { word: "Mother", icon: "fa-female", path: "mommy" },
-            { word: "Book", icon: "fa-book", path: "book" },
-            { word: "Tea", icon: "fa-mug-hot", path: "drink" },
-            { word: "Name", icon: "fa-id-badge", path: "name" },
-            { word: "Happy", icon: "fa-smile", path: "happy" }
+        // ----------------------------------------------------
+        // 4. Interactive 21-Point Hand Model Inspector
+        // ----------------------------------------------------
+        const jointNodes = document.querySelectorAll('.joint-node');
+        const jointTitle = document.getElementById('joint-title');
+        const jointIdx = document.getElementById('joint-idx');
+        const jointName = document.getElementById('joint-name');
+        const jointDesc = document.getElementById('joint-desc');
+        const normX = document.getElementById('norm-x');
+        const normY = document.getElementById('norm-y');
+        const normZ = document.getElementById('norm-z');
+        const btnToggleCentering = document.getElementById('btn-toggle-centering');
+        const btnResetHand = document.getElementById('btn-reset-hand');
+
+        jointNodes.forEach(node => {
+            node.addEventListener('click', () => {
+                jointNodes.forEach(n => n.setAttribute('stroke', '#ffffff'));
+                node.setAttribute('stroke', '#00F29D');
+                node.setAttribute('stroke-width', '3');
+
+                const idx = node.dataset.idx;
+                const name = node.dataset.name;
+                const desc = node.dataset.desc;
+                const norm = JSON.parse(node.dataset.norm);
+
+                jointIdx.textContent = idx;
+                jointName.textContent = name;
+                jointDesc.textContent = desc;
+                normX.textContent = norm[0].toFixed(6);
+                normY.textContent = norm[1].toFixed(6);
+                normZ.textContent = norm[2].toFixed(6);
+            });
+        });
+
+        btnResetHand.addEventListener('click', () => {
+            document.getElementById('node-0').dispatchEvent(new Event('click'));
+        });
+
+        // ----------------------------------------------------
+        // 5. 30 Gestures Complete Lexicon Data & Grid Renderer
+        // ----------------------------------------------------
+        const gesturesData = [
+            { word: "Hello", cat: "greetings", icon: "fa-hand-wave", bn: "নমস্কার / হ্যালো", hi: "नमस्ते", path: "hello", polite_en: "Hello, nice to meet you.", polite_bn: "নমস্কার, আপনার সাথে দেখা হয়ে ভালো লাগলো।", polite_hi: "नमस्ते, आपसे मिलकर खुशी हुई।" },
+            { word: "Thank You", cat: "greetings", icon: "fa-hands-praying", bn: "ধন্যবাদ", hi: "धन्यवाद", path: "thank-you", polite_en: "Thank you so very much.", polite_bn: "আপনাকে অসংখ্য ধন্যবাদ।", polite_hi: "आपका बहुत-बहुत धन्यवाद।" },
+            { word: "Friend", cat: "greetings", icon: "fa-user-group", bn: "বন্ধু", hi: "दोस्त", path: "friend", polite_en: "You are my dear friend.", polite_bn: "আপনি আমার প্রিয় বন্ধু।", polite_hi: "आप मेरे अच्छे दोस्त हैं।" },
+            { word: "Mother", cat: "greetings", icon: "fa-person-breastfeeding", bn: "মা", hi: "माँ", path: "mommy", polite_en: "My mother.", polite_bn: "আমার মা।", polite_hi: "मेरी माँ।" },
+            { word: "Name", cat: "greetings", icon: "fa-id-card", bn: "নাম", hi: "नाम", path: "name", polite_en: "May I please know your name?", polite_bn: "আপনার নাম কি জানতে পারি?", polite_hi: "क्या मैं आपका नाम जान सकता हूँ?" },
+            { word: "Happy", cat: "greetings", icon: "fa-face-smile", bn: "খুশি", hi: "खुश", path: "happy", polite_en: "I am feeling very happy today.", polite_bn: "আমি আজ খুব খুশি।", polite_hi: "मैं आज बहुत खुश हूँ।" },
+            { word: "I Love You", cat: "greetings", icon: "fa-heart", bn: "আমি তোমাকে ভালোবাসি", hi: "मैं तुमसे प्यार करता हूँ", path: "i-love-you", polite_en: "Sending you love and warmth.", polite_bn: "আপনাকে অনেক ভালোবাসা।", polite_hi: "आपको बहुत सारा प्यार।" },
+
+            { word: "Water", cat: "essentials", icon: "fa-glass-water", bn: "জল", hi: "पानी", path: "water", polite_en: "Could I please have some water?", polite_bn: "আমাকে একটু জল দেবেন দয়া করে?", polite_hi: "क्या मुझे थोड़ा पानी मिल सकता है?" },
+            { word: "Food", cat: "essentials", icon: "fa-utensils", bn: "খাবার", hi: "खाना", path: "food", polite_en: "May I please have something to eat?", polite_bn: "আমাকে একটু খাবার দেওয়া যাবে?", polite_hi: "क्या मुझे खाने के लिए कुछ मिल सकता है?" },
+            { word: "Tea", cat: "essentials", icon: "fa-mug-hot", bn: "চা", hi: "चाय", path: "drink", polite_en: "Could I request a cup of tea, please?", polite_bn: "আমাকে এক কাপ চা দেওয়া যাবে?", polite_hi: "क्या मुझे एक कप चाय मिल सकती है?" },
+            { word: "Toilet", cat: "essentials", icon: "fa-restroom", bn: "শৌচালয়", hi: "शौचालय", path: "toilet", polite_en: "Could you kindly direct me to the restroom?", polite_bn: "শৌচালয়টি কোন দিকে দয়া করে বলবেন?", polite_hi: "कृपया बताएं शौचालय किस तरफ है?" },
+            { word: "Medicine", cat: "essentials", icon: "fa-pills", bn: "ওষুধ", hi: "दवाई", path: "medicine", polite_en: "I need to take my prescribed medicine.", polite_bn: "আমার ওষুধ খাওয়া প্রয়োজন।", polite_hi: "मुझे मेरी दवाई लेनी है।" },
+            { word: "Money", cat: "essentials", icon: "fa-coins", bn: "টাকা", hi: "पैसे", path: "money", polite_en: "May I settle the payment?", polite_bn: "আমি কি টাকা পরিশোধ করতে পারি?", polite_hi: "क्या मैं भुगतान कर सकता हूँ?" },
+            { word: "Book", cat: "essentials", icon: "fa-book", bn: "বই", hi: "किताब", path: "book", polite_en: "Could I read this book?", polite_bn: "আমি কি এই বইটি পড়তে পারি?", polite_hi: "क्या मैं यह किताब पढ़ सकता हूँ?" },
+            { word: "Home", cat: "essentials", icon: "fa-house", bn: "বাড়ি", hi: "घर", path: "home", polite_en: "I would like to go home now.", polite_bn: "আমি বাড়ি যেতে চাই।", polite_hi: "मैं अब घर जाना चाहता हूँ।" },
+
+            { word: "Please", cat: "courtesy", icon: "fa-hands", bn: "দয়া করে", hi: "कृपया", path: "please", polite_en: "If you would be so kind, please.", polite_bn: "দয়া করে একটু অনুগ্রহ করবেন।", polite_hi: "कृपया मेरी विनती स्वीकार करें।" },
+            { word: "Sorry", cat: "courtesy", icon: "fa-face-frown", bn: "দুঃখিত", hi: "माफ़ कीजिये", path: "sorry", polite_en: "I sincerely apologize for the inconvenience.", polite_bn: "আমি আন্তরিকভাবে দুঃখিত।", polite_hi: "मुझे अत्यंत खेद है।" },
+            { word: "Good", cat: "courtesy", icon: "fa-thumbs-up", bn: "ভালো", hi: "अच्छा", path: "good", polite_en: "That is wonderful and very good.", polite_bn: "এটা খুবই ভালো।", polite_hi: "यह बहुत अच्छा है।" },
+            { word: "Bad", cat: "courtesy", icon: "fa-thumbs-down", bn: "খারাপ", hi: "बुरा", path: "bad", polite_en: "I am afraid that is not quite right.", polite_bn: "এটা ঠিক হচ্ছে না।", polite_hi: "यह उचित नहीं है।" },
+            { word: "Yes", cat: "courtesy", icon: "fa-circle-check", bn: "হ্যাঁ", hi: "हाँ", path: "yes", polite_en: "Yes, I agree with that.", polite_bn: "হ্যাঁ, আমি সম্মত।", polite_hi: "हाँ, मैं सहमत हूँ।" },
+            { word: "No", cat: "courtesy", icon: "fa-circle-xmark", bn: "না", hi: "नहीं", path: "no", polite_en: "No, thank you kindly.", polite_bn: "না, ধন্যবাদ।", polite_hi: "नहीं, धन्यवाद।" },
+
+            { word: "What", cat: "queries", icon: "fa-circle-question", bn: "কী?", hi: "क्या?", path: "what", polite_en: "Could you please explain what this is?", polite_bn: "এটা কী দয়া করে একটু বলবেন?", polite_hi: "कृपया बताएं यह क्या है?" },
+            { word: "Where", cat: "queries", icon: "fa-location-dot", bn: "কোথায়?", hi: "कहाँ?", path: "where", polite_en: "Could you kindly tell me where this is located?", polite_bn: "এটি কোথায় দয়া করে দিক নির্দেশ করবেন?", polite_hi: "कृपया बताएं यह कहाँ स्थित है?" },
+            { word: "Time", cat: "queries", icon: "fa-clock", bn: "সময়", hi: "समय", path: "time", polite_en: "Could you please tell me what time it is?", polite_bn: "এখন সময় কত দয়া করে বলবেন?", polite_hi: "कृपया बताएं अभी कितना समय हुआ है?" },
+
+            { word: "Help", cat: "emergency", icon: "fa-life-ring", bn: "সাহায্য!", hi: "मदद!", path: "help", polite_en: "Excuse me, I urgently need assistance!", polite_bn: "দয়া করে কেউ আমাকে একটু সাহায্য করুন!", polite_hi: "कृपया मुझे तुरंत सहायता की आवश्यकता है!" },
+            { word: "Pain", cat: "emergency", icon: "fa-heart-crack", bn: "যন্ত্রণা / ব্যথা", hi: "दर्द", path: "hurt", polite_en: "I am experiencing severe physical pain.", polite_bn: "আমার প্রচণ্ড শারীরিক কষ্ট ও যন্ত্রণা হচ্ছে।", polite_hi: "मुझे बहुत तेज दर्द हो रहा है।" },
+            { word: "Call Doctor", cat: "emergency", icon: "fa-user-doctor", bn: "ডাক্তার ডাকুন", hi: "डॉक्टर को बुलाओ", path: "doctor", polite_en: "Please call a doctor immediately!", polite_bn: "দয়া করে অবিলম্বে একজন ডাক্তার ডাকুন!", polite_hi: "कृपया तुरंत एक डॉक्टर को बुलाइए!" },
+            { word: "Police", cat: "emergency", icon: "fa-shield-halved", bn: "পুলিশ", hi: "पुलिस", path: "police", polite_en: "Please contact the security or police!", polite_bn: "দয়া করে পুলিশ বা নিরাপত্তাকর্মীকে খবর দিন!", polite_hi: "कृपया तुरंत पुलिस या सुरक्षा को सूचित करें!" },
+            { word: "Stop", cat: "emergency", icon: "fa-hand", bn: "থামুন", hi: "रुको", path: "stop", polite_en: "Please stop immediately.", polite_bn: "দয়া করে এখনই থামুন।", polite_hi: "कृपया तुरंत रुकिए।" },
+
+            { word: "Nothing", cat: "neutral", icon: "fa-ban", bn: "কিছু না (বিশ্রাম)", hi: "कुछ नहीं", path: "none", polite_en: "Resting state.", polite_bn: "বিশ্রামের অবস্থা।", polite_hi: "विश्राम अवस्था।" }
         ];
 
-        const gridContainer = document.getElementById('sign-grid');
-        const searchInput = document.getElementById('sign-search');
+        const gestureGrid = document.getElementById('gesture-grid');
+        const dictSearchInput = document.getElementById('dict-search-input');
+        const dictFilterChips = document.querySelectorAll('.dict-chip');
+        const dictCountBadge = document.getElementById('dict-count-badge');
 
-        function renderGrid(data) {
-            gridContainer.innerHTML = '';
-            if (data.length === 0) {
-                gridContainer.innerHTML = `<p class="text-gray-500 col-span-full text-center py-4">No matching gestures found.</p>`;
+        let currentCategory = 'all';
+        let currentSearchTerm = '';
+
+        function renderGestureGrid() {
+            gestureGrid.innerHTML = '';
+            const filtered = gesturesData.filter(item => {
+                const matchesCat = (currentCategory === 'all') || (item.cat === currentCategory);
+                const matchesSearch = item.word.toLowerCase().includes(currentSearchTerm) ||
+                                      item.bn.toLowerCase().includes(currentSearchTerm) ||
+                                      item.hi.toLowerCase().includes(currentSearchTerm);
+                return matchesCat && matchesSearch;
+            });
+
+            dictCountBadge.textContent = `Showing ${filtered.length} of ${gesturesData.length} Classes`;
+
+            if (filtered.length === 0) {
+                gestureGrid.innerHTML = `<div class="col-span-full py-8 text-center text-gray-500 font-mono text-xs">No gesture signs matching your criteria.</div>`;
                 return;
             }
-            data.forEach(sign => {
-                const a = document.createElement('a');
-                a.href = `https://babysignlanguage.com/dictionary/${sign.path}/`;
-                a.target = "_blank";
-                a.className = "dict-card bg-white/5 border border-white/10 rounded-xl p-4 flex flex-col items-center justify-center text-center group cursor-pointer hover:bg-white/10";
-                
-                a.innerHTML = `
-                    <div class="w-12 h-12 rounded-full bg-black/30 flex items-center justify-center mb-3 group-hover:text-cyber-blue transition-colors">
-                        <i class="fas ${sign.icon} text-xl text-gray-400 group-hover:text-cyber-blue transition-colors"></i>
+
+            filtered.forEach(sign => {
+                const card = document.createElement('div');
+                card.className = `p-4 rounded-xl border transition-all flex flex-col justify-between group cursor-pointer ${
+                    sign.cat === 'emergency' 
+                        ? 'bg-cyber-crimson/10 border-cyber-crimson/30 hover:border-cyber-crimson shadow-sm' 
+                        : 'bg-black/30 border-white/10 hover:border-cyber-emerald/50'
+                }`;
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-sm ${sign.cat === 'emergency' ? 'text-cyber-crimson' : 'text-cyber-emerald'}">
+                                <i class="fas ${sign.icon}"></i>
+                            </span>
+                            <span class="text-[9px] font-mono uppercase px-1.5 py-0.5 rounded bg-white/5 text-gray-400">
+                                ${sign.cat}
+                            </span>
+                        </div>
+                        <h4 class="font-heading font-bold text-sm text-white group-hover:text-cyber-emerald transition-colors">${sign.word}</h4>
+                        <p class="text-[11px] text-gray-400 mt-1 font-bengali">${sign.bn}</p>
+                        <p class="text-[11px] text-gray-500 font-hindi">${sign.hi}</p>
                     </div>
-                    <span class="font-bold text-gray-200 group-hover:text-white">${sign.word}</span>
-                    <span class="text-[10px] text-gray-500 mt-1 uppercase tracking-wider group-hover:text-cyber-green transition-colors flex items-center gap-1">
-                        View Sign <i class="fas fa-external-link-alt text-[8px]"></i>
-                    </span>
+                    <div class="mt-4 pt-2 border-t border-white/5 flex items-center justify-between text-[10px] text-gray-500">
+                        <button class="hover:text-cyber-emerald flex items-center gap-1 sign-voice-btn" data-word="${sign.word}">
+                            <i class="fas fa-volume-high"></i> Play
+                        </button>
+                        <a href="https://babysignlanguage.com/dictionary/${sign.path}/" target="_blank" class="hover:text-cyber-azure flex items-center gap-1">
+                            Ref <i class="fas fa-external-link text-[8px]"></i>
+                        </a>
+                    </div>
                 `;
-                gridContainer.appendChild(a);
+
+                gestureGrid.appendChild(card);
+            });
+
+            // Attach audio click handlers
+            document.querySelectorAll('.sign-voice-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const word = btn.dataset.word;
+                    speakPhrase(word, 'en');
+                });
             });
         }
 
-        // Initial render
-        renderGrid(signsData);
+        dictFilterChips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                dictFilterChips.forEach(c => {
+                    c.className = "dict-chip px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 text-xs transition-all";
+                });
+                chip.className = "dict-chip px-3 py-1.5 rounded-lg bg-cyber-emerald text-black font-bold text-xs transition-all shadow-sm";
+                currentCategory = chip.dataset.cat;
+                renderGestureGrid();
+            });
+        });
 
-        // Search filtering
-        searchInput.addEventListener('input', (e) => {
-            const term = e.target.value.toLowerCase();
-            const filtered = signsData.filter(sign => sign.word.toLowerCase().includes(term));
-            renderGrid(filtered);
+        dictSearchInput.addEventListener('input', (e) => {
+            currentSearchTerm = e.target.value.toLowerCase().trim();
+            renderGestureGrid();
+        });
+
+        renderGestureGrid();
+
+        // ----------------------------------------------------
+        // 6. Interactive Polite Mode AI Simulator Logic
+        // ----------------------------------------------------
+        const simGestureSelect = document.getElementById('sim-gesture-select');
+        const simPoliteToggle = document.getElementById('sim-polite-toggle');
+        const simLangBtns = document.querySelectorAll('.sim-lang-btn');
+        const simOutputText = document.getElementById('sim-output-text');
+        const simToneBadge = document.getElementById('sim-tone-badge');
+        const simSpeakBtn = document.getElementById('sim-speak-btn');
+
+        let isPoliteOn = true;
+        let activeLang = 'en';
+
+        function updateSimulatorDisplay() {
+            const selectedWord = simGestureSelect.value;
+            const gestureObj = gesturesData.find(g => g.word === selectedWord) || gesturesData[0];
+
+            if (isPoliteOn) {
+                simPoliteToggle.textContent = 'ENABLED (ON)';
+                simPoliteToggle.className = 'px-3 py-1 text-xs font-mono font-bold rounded-lg bg-cyber-emerald text-black shadow-neon-emerald transition-all';
+                simToneBadge.textContent = 'Respectful Request';
+                simToneBadge.className = 'text-[10px] font-mono px-2 py-0.5 rounded bg-cyber-emerald/10 text-cyber-emerald border border-cyber-emerald/30';
+
+                if (activeLang === 'bn') simOutputText.textContent = `"${gestureObj.polite_bn}"`;
+                else if (activeLang === 'hi') simOutputText.textContent = `"${gestureObj.polite_hi}"`;
+                else simOutputText.textContent = `"${gestureObj.polite_en}"`;
+            } else {
+                simPoliteToggle.textContent = 'DISABLED (RAW)';
+                simPoliteToggle.className = 'px-3 py-1 text-xs font-mono font-bold rounded-lg bg-white/10 text-gray-300 transition-all';
+                simToneBadge.textContent = 'Raw Imperative';
+                simToneBadge.className = 'text-[10px] font-mono px-2 py-0.5 rounded bg-white/10 text-gray-400 border border-white/10';
+
+                if (activeLang === 'bn') simOutputText.textContent = `"${gestureObj.bn}"`;
+                else if (activeLang === 'hi') simOutputText.textContent = `"${gestureObj.hi}"`;
+                else simOutputText.textContent = `"${gestureObj.word}"`;
+            }
+        }
+
+        simPoliteToggle.addEventListener('click', () => {
+            isPoliteOn = !isPoliteOn;
+            updateSimulatorDisplay();
+        });
+
+        simGestureSelect.addEventListener('change', updateSimulatorDisplay);
+
+        simLangBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                simLangBtns.forEach(b => {
+                    b.className = "sim-lang-btn px-3 py-2 rounded-lg bg-white/5 text-gray-300 font-bold text-xs border border-white/10 hover:bg-white/10";
+                });
+                btn.className = "sim-lang-btn px-3 py-2 rounded-lg bg-cyber-azure text-white font-bold text-xs border border-cyber-azure shadow-neon-azure";
+                activeLang = btn.dataset.lang;
+                updateSimulatorDisplay();
+            });
+        });
+
+        function speakPhrase(text, lang) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text.replace(/"/g, ''));
+                if (lang === 'bn') utterance.lang = 'bn-IN';
+                else if (lang === 'hi') utterance.lang = 'hi-IN';
+                else utterance.lang = 'en-US';
+                utterance.rate = 0.95;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        simSpeakBtn.addEventListener('click', () => {
+            const raw = simOutputText.textContent;
+            speakPhrase(raw, activeLang);
+        });
+
+        // ----------------------------------------------------
+        // 7. Emergency SOS Simulator Logic
+        // ----------------------------------------------------
+        const sosTriggerBtns = document.querySelectorAll('.sos-trigger-btn');
+        const sosAlertBox = document.getElementById('sos-alert-box');
+        const sosSeverityBadge = document.getElementById('sos-severity-badge');
+        const sosAlertMsg = document.getElementById('sos-alert-msg');
+        const sosAlertTime = document.getElementById('sos-alert-time');
+        const sosAckBtn = document.getElementById('sos-ack-btn');
+
+        sosTriggerBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const sosWord = btn.dataset.sos;
+                const isCritical = (sosWord === 'Call Doctor' || sosWord === 'Police');
+
+                sosAlertBox.classList.remove('hidden');
+                sosSeverityBadge.textContent = isCritical ? 'CRITICAL' : 'HIGH';
+                sosSeverityBadge.className = `px-2.5 py-0.5 text-[10px] font-mono font-bold rounded ${isCritical ? 'bg-cyber-crimson text-white' : 'bg-cyber-amber text-black'}`;
+                sosAlertMsg.innerHTML = `Distress Alert Triggered: Patient signed <strong>"${sosWord}"</strong>. High-priority audio broadcast & Caregiver telemetry notified.`;
+                sosAlertTime.textContent = new Date().toLocaleTimeString();
+
+                speakPhrase(`Emergency alert! ${sosWord} detected.`, 'en');
+            });
+        });
+
+        sosAckBtn.addEventListener('click', () => {
+            sosAlertBox.classList.add('hidden');
+        });
+
+        // ----------------------------------------------------
+        // 8. Quickstart CLI Tab Switching
+        // ----------------------------------------------------
+        const cliTabs = document.querySelectorAll('.cli-tab');
+        const tabPanes = document.querySelectorAll('.tab-pane');
+
+        cliTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                cliTabs.forEach(t => {
+                    t.className = "cli-tab px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-mono transition-all";
+                });
+                tab.className = "cli-tab px-4 py-2 rounded-lg bg-cyber-emerald text-black font-bold text-xs font-mono transition-all";
+
+                const targetTab = tab.dataset.tab;
+                tabPanes.forEach(pane => {
+                    pane.classList.add('hidden');
+                    if (pane.id === `tab-content-${targetTab}`) {
+                        pane.classList.remove('hidden');
+                    }
+                });
+            });
+        });
+
+        // ----------------------------------------------------
+        // 9. BibTeX Copy Button
+        // ----------------------------------------------------
+        const copyBibtexBtn = document.getElementById('copy-bibtex-btn');
+        copyBibtexBtn.addEventListener('click', () => {
+            const bibtex = `@software{ishara_connect_2026,\n  author = {Sk Nooruddin},\n  title = {Ishara Connect: Real-Time AI Sign Language Interpreter & Clinical Telemetry Platform},\n  year = {2026},\n  url = {https://github.com/nooruddinsk660-rgb/ishara-connect}\n}`;
+            navigator.clipboard.writeText(bibtex).then(() => {
+                copyBibtexBtn.innerHTML = '<i class="fas fa-check text-cyber-emerald"></i> Copied!';
+                setTimeout(() => {
+                    copyBibtexBtn.innerHTML = '<i class="fas fa-copy"></i> <span>Copy BibTeX</span>';
+                }, 2000);
+            });
+        });
+
+        // ----------------------------------------------------
+        // 10. Global Command / Search Palette (Ctrl+K)
+        // ----------------------------------------------------
+        const searchModal = document.getElementById('search-modal');
+        const searchTrigger = document.getElementById('search-trigger');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const modalSearchInput = document.getElementById('modal-search-input');
+        const modalSearchResults = document.getElementById('modal-search-results');
+
+        function openSearchModal() {
+            searchModal.classList.remove('hidden');
+            searchModal.classList.add('flex');
+            modalSearchInput.focus();
+            renderModalResults('');
+        }
+
+        function closeSearchModal() {
+            searchModal.classList.add('hidden');
+            searchModal.classList.remove('flex');
+        }
+
+        searchTrigger.addEventListener('click', openSearchModal);
+        closeModalBtn.addEventListener('click', closeSearchModal);
+
+        window.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                if (searchModal.classList.contains('hidden')) openSearchModal();
+                else closeSearchModal();
+            }
+            if (e.key === 'Escape' && !searchModal.classList.contains('hidden')) {
+                closeSearchModal();
+            }
+        });
+
+        const searchableIndex = [
+            { title: "21-Point Hand Landmarking Topology", section: "#topology", tag: "Vision" },
+            { title: "Spatial Invariance Centering Math (L0 Origin)", section: "#math", tag: "Math" },
+            { title: "Scale Normalization (L9 Middle MCP Euclidean)", section: "#math", tag: "Math" },
+            { title: "Group-Aware Split & Anti-Leakage Validation", section: "#ml", tag: "ML" },
+            { title: "Polite Mode AI Contextual Synthesizer", section: "#simulator", tag: "AI" },
+            { title: "30-Gesture Complete Lexicon Directory", section: "#dictionary", tag: "Signs" },
+            { title: "Emergency SOS Triage System", section: "#emergency", tag: "Clinical" },
+            { title: "Caregiver Monitoring Dashboard", section: "#dashboard", tag: "Telemetry" },
+            { title: "Multi-Tenant PostgreSQL Database Schema", section: "#architecture", tag: "Backend" },
+            { title: "WebSocket Event Reference & API", section: "#api", tag: "API" },
+            { title: "Quickstart Installation & Deployment", section: "#quickstart", tag: "CLI" }
+        ];
+
+        function renderModalResults(term) {
+            modalSearchResults.innerHTML = '';
+            const filtered = searchableIndex.filter(item => item.title.toLowerCase().includes(term.toLowerCase()));
+            if (filtered.length === 0) {
+                modalSearchResults.innerHTML = `<div class="p-4 text-center text-gray-500">No results found for "${term}".</div>`;
+                return;
+            }
+            filtered.forEach(item => {
+                const a = document.createElement('a');
+                a.href = item.section;
+                a.className = "flex items-center justify-between p-3 rounded-lg hover:bg-white/5 text-gray-300 hover:text-white transition-colors block";
+                a.innerHTML = `
+                    <span class="font-medium">${item.title}</span>
+                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-white/5 text-cyber-emerald border border-white/10">${item.tag}</span>
+                `;
+                a.addEventListener('click', closeSearchModal);
+                modalSearchResults.appendChild(a);
+            });
+        }
+
+        modalSearchInput.addEventListener('input', (e) => {
+            renderModalResults(e.target.value);
+        });
+
+        // Mobile Navbar Toggle
+        const mobileToggle = document.getElementById('mobile-toggle');
+        const sidebar = document.getElementById('sidebar');
+        mobileToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('hidden');
+            sidebar.classList.toggle('fixed');
+            sidebar.classList.toggle('inset-0');
+            sidebar.classList.toggle('z-50');
+            sidebar.classList.toggle('bg-[#040711]');
+            sidebar.classList.toggle('p-6');
         });
     </script>
 </body>
